@@ -1,0 +1,18 @@
+requirejs.config({
+    //By default load any module IDs from js/lib
+    baseUrl: 'js/app',
+    //except, if the module ID starts with "app",
+    //load it from the js/app directory. paths
+    //config is relative to the baseUrl, and
+    //never includes a ".js" extension since
+    //the paths config could be for a directory.
+    paths: {
+        app: '../app',
+        lib: '../lib'
+    }
+});
+
+requirejs(['lib/jquery', 'util/test_tone'],
+function($, test_tone) {
+  // test_tone.start_tone(); 
+});

@@ -241,6 +241,14 @@ define(["lib/lodash"], function(_) {
   }
 
   class DEdge {
+    /**
+     * A directed edge in a graph of VObjects
+     *
+     * @param from {VObject} the tail vobject
+     * @param from_output {int} the output index on the tail vobject
+     * @param to {VObject} the arrow vobject
+     * #param to_output {int} the input index on the arrow vobject
+     */
     constructor(from, from_output, to, to_input) {
       this.from = from;
       this.from_output = from_output;
@@ -258,7 +266,7 @@ define(["lib/lodash"], function(_) {
       // one way map of vobject -> outgoing dedges
       //
       // { 
-      //   (from vobject id): { 
+      //   (from vobject id): {
       //      (from output index): [Dedge]
       //   }
       // }
@@ -280,7 +288,50 @@ define(["lib/lodash"], function(_) {
 
     remove_vobject(vobject) {
       delete this.sources[vobject.id];
+
+      // for all outgoing dedges going from this object, reduce
+      // the number of active inputs on the target vobjects by 1
+      var outputs = this.dedges[vobject.id];
+      for (var o in outputs) {
+        var dedges = outputs[o];
+        for (var ei in dedges) {
+          var dedge = dedges[ei];
+          this.num_active_inputs[dedge.to.id] -= 1;
+        }
+      }
+
+      // remove edges going from the object
       delete this.dedges[vobject.id];
+
+      // remove edges going to the object
+      for (var from_vid in this.dedges) {
+        var outputs = this.dedges[from_vid];
+        var del_outputs = [];
+        for (var o in outputs) {
+          var dedges = outputs[o];
+          var deletes = []
+          for (var ei in dedges) {
+            var dedge = dedges[ei];
+            if (dedge.to === vobject) {
+              deletes.push(ei);              
+            }
+          }
+
+          if (deletes.length === dedges.length) {
+            // no more edges left from that output, remove the entry
+            // for the output
+            del_outputs.push(o);
+          } else {
+            for (var i=0; i < deletes.length; i++) {
+              delete dedges[deletes[i]];
+            }
+          }
+        }
+
+        for (var d=0; d < del_outputs.length; d++) {
+          delete outputs[o];
+        }
+      }
     }
 
     add_dedge(from, from_output, to, to_input) {
@@ -297,22 +348,57 @@ define(["lib/lodash"], function(_) {
 
       output_edges.push(new DEdge(from, from_output, to, to_input));
 
-      var nai = this.num_active_inputs[to_input.id] || 0;
-      this.num_active_inputs[to_input.id] = nai + 1;
+      var nai = this.num_active_inputs[to.id] || 0;
+      this.num_active_inputs[to.id] = nai + 1;
+
+      // remove arrow vobject from sources list now that its no longer a 
+      // source
+      delete this.sources[to.id];
     }
 
-    remove_dedge(from, from_object, to, to_input) {
+    remove_dedge(from, from_output, to, to_input) {
       var edges = this.dedges[from.id][from_output]
       for (var i=0; i < edges.length; i++) {
-        if (edges[i].from === from && edges[i].from_object === from_object 
+        if (edges[i].from === from && edges[i].from_output === from_output 
             && edges[i].to === to && edges[i].to_input === to_input) {
           edges.splice(i);
         }
       }
+
+      // if theres no more edges from that output, delete the entry entirely
       if (!edges.length) {
         delete this.dedges[from.id][from_output];
       }
-      this.num_active_inputs[to_input.id] -= 1;
+
+      this.num_active_inputs[to.id] -= 1;
+
+      var has_inputs = false;
+      // if 'to' no longer has any inputs pointing at it, add it back to 
+      // the sources list
+      for (var from_vid in this.dedges) {
+        var outputs = this.dedges[from_vid];
+        var del_outputs = [];
+        for (var o in outputs) {
+          var dedges = outputs[o];
+          for (var ei in dedges) {
+            if (dedge.to === to) {
+              has_inputs = true;
+            }
+          }
+
+          if (has_inputs) { 
+            break;
+          }
+        }
+
+        if (has_inputs) {
+          break;
+        }
+      }
+
+      if (!has_inputs) {
+        this.sources[to.id] = to;        
+      }
     }
 
     num_active_inputs(vobject) {

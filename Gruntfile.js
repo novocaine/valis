@@ -14,6 +14,19 @@ module.exports = function(grunt) {
       '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
       '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
       ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n',
+
+    react: {
+      gui: {
+        files: [{
+          expand: true,
+          cwd: 'www/js',
+          src: ['app/**/*.jsx'],
+          dest: 'build/es5/js',
+          ext: '.js'
+        }]
+      }
+    },
+
     traceur: {
       options: {
         traceurOptions: "--experimental --source-maps",
@@ -83,27 +96,6 @@ module.exports = function(grunt) {
       }
     },
 
-    // Task configuration.
-    /*concat: {
-      options: {
-        banner: '<%= banner %>',
-        stripBanners: true
-      },
-      dist: {
-        src: ['www/src/**.js', 'www/lib/**.js'],
-        dest: 'dist/<%= pkg.name %>.js'
-      }
-    },
-    uglify: {
-      options: {
-        banner: '<%= banner %>'
-      },
-      dist: {
-        src: '<%= concat.dist.dest %>',
-        dest: 'dist/<%= pkg.name %>.min.js'
-      }
-    },*/
-
     jshint: {
       options: {
         curly: true,
@@ -158,11 +150,13 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-requirejs');
   grunt.loadNpmTasks("grunt-traceur-simple");
   grunt.loadNpmTasks("grunt-contrib-copy");
+  grunt.loadNpmTasks('grunt-react');
 
   // valis tasks.
   //
-  // build es5 version into build/es5 (for devel)
-  grunt.registerTask('es5', ['jshint', 'traceur', 'copy:es5']);
+  // build es5 version into build/es5 (for devel); this corporates jsx
+  // compilation and traceur (es6 -> es5) transpilation.
+  grunt.registerTask('es5', ['react:gui', 'jshint', 'traceur', 'copy:es5']);
   // build minified and concatenated into build/dist using r.js
   grunt.registerTask('dist', ['es5',  'copy:dist', 'requirejs']);
 };

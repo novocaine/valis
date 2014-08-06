@@ -8,6 +8,7 @@ define([], function() {
   return {
     process_argmap: function(argmap, args) {
       var result = {};
+      args = args || {};
 
       for (var k in argmap) {
         if (!(k in args)) {

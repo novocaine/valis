@@ -278,16 +278,22 @@ define(["lib/lodash"], function(_) {
       // this is used by the engine to deduce when a vobject's input buffers
       // have been filled and it is ready to process
       this.num_active_inputs = {};
+
+      // this is just here so its quick to iterate over all the vobjects
+      // (and look them up if need be)
+      this._vobjects = {};
     }
 
     add_vobject(vobject) {
       // initially, will be a source because it has no inputs
       this.sources[vobject.id] = vobject;
       this.dedges[vobject.id] = {};
+      this._vobjects[vobject.id] = vobject;
     }
 
     remove_vobject(vobject) {
       delete this.sources[vobject.id];
+      delete this._vobjects[vobject.id];
 
       // for all outgoing dedges going from this object, reduce
       // the number of active inputs on the target vobjects by 1
@@ -414,6 +420,23 @@ define(["lib/lodash"], function(_) {
         sum++;
       }
       return sum;
+    }
+
+    iter_dedges() {
+      /* generator - can't really see how to use the * syntax in a class? */
+      return _.bind(function*() {
+        var outputs = this.dedges[vobject.id];
+        for (var o in outputs) {
+          var dedges = outputs[o];
+          for (var ei in dedges) {
+            yield ei;
+          }
+        }
+      }, this)();
+    }
+
+    get vobjects() {
+      return this._vobjects;
     }
   }
 

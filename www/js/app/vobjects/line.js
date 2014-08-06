@@ -1,22 +1,14 @@
 define(["vobjects/vobject", "vobjects/vobject_args"],
 function(vobject, vobject_args) {
   class Line extends vobject.VObject {
-    constructor(args) {
-      super(args);
-      this.target_time = 0;
-      this.val = this.args.initial_value;
+    constructor(initial_value=0, target_time=0) {
+      super();
+      this.target_time = target_time;
+      this.val = initial_value;
     }
 
     num_inputs() { return 2; }
     num_outputs() { return 2; }
-
-    process_args(args) {
-      return vobject_args.process_argmap({
-        "initial_value": {
-          "default": 0
-        }
-      }, args);
-    }
 
     process(context) {
       // process control messages.
@@ -63,5 +55,12 @@ function(vobject, vobject_args) {
         this.val = context.output_buffers[0][context.output_buffers[0].length-1];
       }
     }
+  }
+    
+  Line.vobject_class = "line~";
+  Line.description = "Same as MAX/MSP's line~ object";
+
+  return {
+    Line: Line
   }
 });

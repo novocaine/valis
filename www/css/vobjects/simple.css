@@ -1,0 +1,27 @@
+.vobject-simple
+{
+    font-family: "Inconsolata";
+    border: 1px solid blue; 
+    position: relative;
+}
+
+.vobject-simple .inputs
+{
+   height: 3px; 
+}
+
+.vobject-simple .title
+{
+    padding: 3px;
+}
+
+.vobject-simple .input
+{
+    width: 20px;
+    height: 3px;
+    background-color: blue;
+    display: inline-block;
+    vertical-align: top;
+    cursor: pointer;
+    margin-right: 10px;
+}

@@ -12,7 +12,7 @@ requirejs.config({
     }
 });
 
-requirejs(['lib/jquery', 'util/test_tone'],
-function($, test_tone) {
-  // test_tone.start_tone(); 
+requirejs(['lib/jquery', 'app/gui/main'],
+function($, gui) {
+  gui.init(); 
 });

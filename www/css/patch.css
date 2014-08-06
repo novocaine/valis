@@ -1,0 +1,13 @@
+.palette
+{
+    font-family: "Inconsolata";
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 1em;
+}
+
+.palette li
+{
+    display: inline;
+    list-style: none;
+    cursor: pointer;
+}

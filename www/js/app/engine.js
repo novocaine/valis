@@ -422,17 +422,17 @@ define(["lib/lodash"], function(_) {
       return sum;
     }
 
-    iter_dedges() {
-      /* generator - can't really see how to use the * syntax in a class? */
-      return _.bind(function*() {
-        var outputs = this.dedges[vobject.id];
+    iter_dedges(callback) {
+      /* generator stuff in emca6 was still pretty flaky when writing this */
+      for (var vid in this.dedges) {
+        var outputs = this.dedges[vid];
         for (var o in outputs) {
           var dedges = outputs[o];
           for (var ei in dedges) {
-            yield ei;
+            callback(dedges[ei]);
           }
         }
-      }, this)();
+      }
     }
 
     get vobjects() {

@@ -5,9 +5,15 @@
     position: relative;
 }
 
-.vobject-simple .inputs
+.vobject-simple.draggable
 {
-   height: 3px; 
+    cursor: pointer;
+}
+
+.vobject-simple .inputs, 
+.vobject-simple .outputs
+{
+    height: 3px; 
 }
 
 .vobject-simple .title
@@ -15,13 +21,14 @@
     padding: 3px;
 }
 
-.vobject-simple .input
+.vobject-simple .input, 
+.vobject-simple .output
 {
     width: 20px;
     height: 3px;
     background-color: blue;
     display: inline-block;
     vertical-align: top;
-    cursor: pointer;
+    cursor: crosshair;
     margin-right: 10px;
 }

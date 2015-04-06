@@ -2,8 +2,8 @@
 define(["lib/react", 
         "lib/jquery-ui", 
         "jquery",
-        "app/gui/jsx/patch", 
-        "app/vobject_factory"], 
+        "app/gui/jsx/patch",
+        "app/vobject_factory"],
 function(React, jqueryui, $, patch_component, vobject_factory) {
   /**
    * The top-level 'document' component.
@@ -21,17 +21,6 @@ function(React, jqueryui, $, patch_component, vobject_factory) {
             patch_model={this.props.patch_model} />
         </div>
       )
-    },
-
-    /** 
-     * invoked when a new vobject is dropped from the palette into the
-     * document.
-     *
-     * this will get more complex when there's nested patches.
-     */
-    vobject_dropped: function(vobject_classname, position, offset) {
-      var vobject = vobject_factory.create(vobject_classname);
-      this.refs.rootPatch.vobject_dropped(vobject, position, offset);
     }
   });
 
@@ -44,21 +33,18 @@ function(React, jqueryui, $, patch_component, vobject_factory) {
       return <ul className="palette"> {
         _.mapValues(vobject_factory.vobject_classes, 
           function(vclass, cname) {
-            return <li key={cname} data-classname={cname}>{cname}</li>;
+            return <li className="palette-item" 
+                       key={cname} data-classname={cname}>{cname}</li>;
           })
       } </ul>
     },
 
     componentDidMount: function() {
-      // register for drag onto the document's patch
       $(this.getDOMNode()).find("li").each(_.bind(function(i, li) {
         $(li).draggable({
           opacity: 0.7,
           helper: "clone",
-          stop: _.bind(function(event, ui) {
-            this.props.doc.vobject_dropped(ui.helper.attr("data-classname"),
-              ui.position, ui.offset);
-          }, this)
+          revert: "invalid"
         })
       }, this));
     }

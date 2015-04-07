@@ -38,7 +38,7 @@
     "lodash": "~2.4.1"
   },
   "scripts": {
-    "prepublish": "grunt dist", 
+    "prepublish": "cd node_modules/traceur && make clean && make && make bin/traceur-runtime.js && grunt dist", 
     "test": "./node_modules/karma/bin/karma start --browsers Firefox --single-run"
   }
 }

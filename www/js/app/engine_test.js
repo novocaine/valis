@@ -1,5 +1,5 @@
-define(["test/boot_jasmine", "vobjects/vobject", "engine"], 
-  function(jasmine, vobject, engine) {
+define(["vobjects/vobject", "engine"], 
+  function(vobject, engine) {
   /*describe('AudioProcess', function() {
     describe('run', function() {
       it('should transfer data for a 1 dedge graph', function() {

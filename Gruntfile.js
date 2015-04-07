@@ -4,6 +4,12 @@ var path = require("path");
 
 module.exports = function(grunt) {
   var traceurRuntime = "node_modules/traceur/bin/traceur-runtime.js";
+  var requireBaseUrl = "build/es5/js/app";
+  var requirePaths = {
+      lib: '../lib',
+      app: '../app',
+      requireLib: '../lib/require'
+  };
 
   // Project configuration.
   grunt.initConfig({
@@ -82,14 +88,10 @@ module.exports = function(grunt) {
     requirejs: {
       compile: {
         options: {
-          baseUrl: "build/es5/js/app",
+          baseUrl: requireBaseUrl,
           mainConfigFile: "build/es5/js/app.js",
           name: "app",
-          paths: {
-              lib: '../lib',
-              app: '../app',
-              requireLib: '../lib/require'
-          },
+          paths: requirePaths,
           out: "build/dist/js/app.js",
           include: 'requireLib'
         }
@@ -139,7 +141,24 @@ module.exports = function(grunt) {
         files: '<%= jshint.lib_test.src %>',
         tasks: ['jshint:lib_test', 'qunit']
       }
+    },
+    jasmine: {
+      taskName: {
+        src: ['build/dist/js/lib/traceur-runtime.js', 'build/dist/js/app.js'],
+
+        options: {
+          specs: 'www/js/app/engine_test.js',
+          template: require('grunt-template-jasmine-requirejs'),
+          templateOptions: {
+            requireConfig: {
+              baseUrl: requireBaseUrl,
+              paths: requirePaths 
+            }
+          }
+        }
+      }
     }
+
   });
 
   // These plugins provide necessary tasks.
@@ -151,6 +170,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks("grunt-traceur-simple");
   grunt.loadNpmTasks("grunt-contrib-copy");
   grunt.loadNpmTasks('grunt-react');
+  grunt.loadNpmTasks('grunt-contrib-jasmine');
 
   // valis tasks.
   //

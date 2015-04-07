@@ -38,6 +38,7 @@
     "lodash": "~2.4.1"
   },
   "scripts": {
+    "prepublish": "grunt dist", 
     "test": "./node_modules/karma/bin/karma start --browsers Firefox --single-run"
   }
 }

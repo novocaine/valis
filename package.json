@@ -28,11 +28,15 @@
     "grunt-traceur-simple": "^0.9.6",
     "karma": "^0.12.31",
     "karma-chrome-launcher": "^0.1.7",
+    "karma-firefox-launcher": "^0.1.4",
     "karma-jasmine": "^0.3.5",
     "karma-requirejs": "^0.2.2",
     "react-tools": "^0.11.1",
     "requirejs": "^2.1.17",
     "sourcemapped-stacktrace": "git://github.com/novocaine/sourcemapped-stacktrace",
     "traceur": "git://github.com/google/traceur-compiler"
+  },
+  "scripts": {
+    "test": "./node_modules/karma/bin/karma start --browsers Firefox --single-run"
   }
 }

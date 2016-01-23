@@ -15,4 +15,12 @@
 .patch
 {
     position: relative;
+    border-bottom: 1px solid #ccc;
+    height: 500px;
+}
+
+.patch svg
+{
+    width: 100%;
+    height: 100%;
 }

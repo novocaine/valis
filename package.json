@@ -33,7 +33,7 @@
     "react-tools": "~0.11.1",
     "requirejs": "~2.1.17",
     "sourcemapped-stacktrace": "git://github.com/novocaine/sourcemapped-stacktrace",
-    "traceur": "git://github.com/google/traceur-compiler",
+    "traceur": "~0.0.96",
     "jasmine-core": "~2.2.0",
     "lodash": "~2.4.1"
   },

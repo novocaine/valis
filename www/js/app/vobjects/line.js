@@ -1,5 +1,5 @@
-define(["vobjects/vobject", "vobjects/vobject_args"],
-function(vobject, vobject_args) {
+define(["vobjects/vobject"],
+function(vobject) {
   class Line extends vobject.VObject {
     constructor(initial_value=0, target_time=0) {
       super();
@@ -60,7 +60,5 @@ function(vobject, vobject_args) {
   Line.vobject_class = "line~";
   Line.description = "Same as MAX/MSP's line~ object";
 
-  return {
-    Line: Line
-  }
+  return Line;
 });

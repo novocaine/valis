@@ -1,38 +1,39 @@
-define(["vobjects/vobject"],
-function(vobject) {
+define(["vobjects/vobject", "util", "console"],
+function(vobject, util, vconsole) {
   class DAC extends vobject.VObject {
-    constructor(...args) {
-      super(args);
-    }
-
     // strictly stereo, for now
     num_inputs() { return 2; }
     num_outputs() { return 0; }
 
-    process(context) {
+    generate(context, inputs, outputs) {
       /* copy additively into external output buffers */
-      for (var i in context.input_buffers) {
+      for (var i in inputs) {
         if (i >= context.ext_output_buffers.length) {
           continue;
         }
 
-        var channel_data = context.ext_output_buffers[i];
-        if (context.input_buffers[i].length !== channel_data.length) {
-          throw new Error("input buffer length " + context.input_buffers[i].length +
-            " !== channel data length " + channel_data.length);
+        var ib = inputs[i];
+        if (!util.is_audio_array(ib)) {
+          throw new Error("input " + i + " received non-audio: " + 
+            (typeof ib).toString() + ": " + ib.toString().slice(0, 100));
         }
 
-        var ib = context.input_buffers[i];
+        var buffer = context.ext_output_buffers[i];
+
+        if (buffer.length !== ib.length) {
+          throw new Error("input buffer length !== channel data length");
+        }
+
         for (var s=0; s < ib.length; s++) {
           // adds, so if there are multiple sources writing to the buffer
           // the audio will be mixed together
-          channel_data[s] += ib[s];
+          buffer[s] += ib[s];
         }
       }
     }
   }
 
-  return {
-    DAC: DAC
-  }
+  DAC.vobject_class = "dac~";
+
+  return DAC;
 });

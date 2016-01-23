@@ -17,6 +17,7 @@ function(React, jqueryui, $, patch_component, vobject_factory) {
       return (
         <div className="doc">
           <Palette doc={this} />
+          <EnableAudio doc={this} />
           <patch_component.PatchComponent ref="rootPatch" doc={this} 
             patch_model={this.props.patch_model} />
         </div>
@@ -47,6 +48,21 @@ function(React, jqueryui, $, patch_component, vobject_factory) {
           revert: "invalid"
         })
       }, this));
+    }
+  });
+
+  var EnableAudio = React.createClass({
+    render: function() {
+      return <button className="enable-audio" onClick={this.onClick}>{
+        this.props.doc.props.patch_model.audio_enabled() ? 
+          "Disable Audio" : "Enable Audio" 
+      }</button>;
+    },
+
+    onClick: function() {
+      this.props.doc.props.patch_model.enable_audio(
+        !this.props.doc.props.patch_model.audio_enabled());
+      this.setState({});
     }
   });
 

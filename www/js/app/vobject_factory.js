@@ -1,7 +1,8 @@
-define(["app/vobjects/line"], function(line) {
-  var class_list = [
-    line.Line
-  ];
+define(["app/vobjects/line", "app/vobjects/js", 
+        "app/vobjects/dac", "app/vobjects/cycle"], 
+  function(Line, JS, DAC, Cycle) {
+  // register them here
+  var class_list = [Line, JS, DAC, Cycle];
 
   var vobject_classes = _.object(class_list.map(function(_class) {
     return [_class.vobject_class, _class];
@@ -17,5 +18,5 @@ define(["app/vobjects/line"], function(line) {
   return {
     vobject_classes: vobject_classes,
     create: create
-  }
+  };
 });

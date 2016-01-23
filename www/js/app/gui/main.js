@@ -9,7 +9,9 @@ function(React, patch, doc, engine, vobject_factory) {
      * Constructs a blank patch 
      */
     constructor() {
-      this.graph = new engine.VObjectGraph();
+      // TODO: move this into a parent 'doc' when we support sub-patches
+      this.engine = new engine.Engine();
+      this.graph = this.engine.graph;
       this.vobject_positions = {};
     }
 
@@ -35,6 +37,14 @@ function(React, patch, doc, engine, vobject_factory) {
 
     get_vobject_position(vobject_id) {
       return this.vobject_positions[vobject_id];
+    }
+
+    enable_audio(enabled) {
+      enabled ? this.engine.start() : this.engine.stop();
+    }
+
+    audio_enabled() {
+      return this.engine.running;
     }
   }
 

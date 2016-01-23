@@ -10,6 +10,7 @@
     display: inline;
     list-style: none;
     cursor: pointer;
+    margin-right: 3ex;
 }
 
 .patch

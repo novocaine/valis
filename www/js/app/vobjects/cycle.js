@@ -4,34 +4,24 @@ function(vobject, vobject_args) {
     num_inputs() { return 1; }
     num_outputs() { return 1; }
 
-    process_args(args) {
-      var args = vobject_args.process_argmap({
-        "frequency": {
-          "default": 440
-        }
-      }, args);
-
-      return args;
+    constructor(frequency = 440) {
+      super();
+      this.frequency = frequency;
     }
 
-    constructor(args) {
-      super(args);
-    }
-
-    process(context) {
-      if (!context.output_buffers[0]) {
-        return;
+    generate(context, inputs, outputs) {
+      let frequency = 0 in inputs ? inputs[0] : this.frequency;
+      let radians_per_sample = (frequency * 2 * Math.PI) / context.sample_rate;
+      let result = context.get_buffer();
+      for (var i=0; i < result.length; i++) {
+        result[i] = Math.cos((context.sample_time + i) * radians_per_sample);
       }
 
-      var radians_per_sample = (this.args.frequency * 2 * Math.PI) / context.sample_rate;
-      for (var i=0; i < context.output_buffers[0].length; i++) {
-        context.output_buffers[0][i] = Math.cos(
-          (context.sample_time + i) * radians_per_sample);
-      }
+      return [result];
     }
   }
 
-  return {
-    Cycle: Cycle
-  }
+  Cycle.vobject_class = "cycle~";
+
+  return Cycle;
 });

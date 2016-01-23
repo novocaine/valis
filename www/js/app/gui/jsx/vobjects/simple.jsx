@@ -49,7 +49,7 @@ function(React, util, $) {
               y: ui.position.top
             }
           });
-        }, this)
+        }, this),
       }).addClass("draggable");
     },
 
@@ -63,7 +63,8 @@ function(React, util, $) {
         parseInt($(e.currentTarget).attr("data-output-index"), 10),
         e.clientX, 
         e.clientY);
-      return false;
+
+      e.stopPropagation();
     },
 
     render: function() {

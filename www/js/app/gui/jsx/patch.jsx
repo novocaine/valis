@@ -63,20 +63,20 @@ function(React, lodash, simple, vobject_factory) {
     },
 
     startDrawingDedge: function(fromVobjectComponent, fromOutputNum, clientX, clientY) {
-      // create line svg in parent patch svg
       var line = this.refs.drawingDedgeLine;
 
-      // convert to co-ordinates within this div
-      var offset = $(line.getDOMNode()).offset();
-      var x = clientX - offset.left;
-      var y = clientY - offset.top;
-
+      // convert clientX, clientY from window co-ordinates to patch
+      // co-ordinates
       var domNode = $(this.getDOMNode());
+      var offset = domNode.offset();
+      var startX = clientX - offset.left;
+      var startY = clientY - offset.top;
+
       // attach patch-wide mousemove
       domNode.on("mousemove", function(emm) {
         line.setState({ 
-          startX: x,
-          startY: y,
+          startX: startX,
+          startY: startY,
           drawToX: emm.clientX - offset.left,
           drawToY: emm.clientY - offset.top,
           visible: true

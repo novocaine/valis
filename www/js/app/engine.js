@@ -423,12 +423,13 @@ define(["lib/lodash"], function(_) {
     }
 
     iter_dedges(callback) {
-      /* generator stuff in emca6 was still pretty flaky when writing this */
+      /* XXX: generator stuff in emca6 was still pretty flaky when writing this */
       for (var vid in this.dedges) {
         var outputs = this.dedges[vid];
         for (var o in outputs) {
           var dedges = outputs[o];
           for (var ei in dedges) {
+            console.log("iter_dedges " + ei);
             callback(dedges[ei]);
           }
         }

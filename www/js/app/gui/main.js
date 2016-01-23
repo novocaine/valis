@@ -27,15 +27,14 @@ function(React, patch, doc, engine, vobject_factory) {
     // would have to measure the items every time, which is slow)
 
     set_vobject_position(vobject_id, x, y) {
-      this.vobject_positions[vobject.id] = { 
+      this.vobject_positions[vobject_id] = { 
         x: x, 
         y: y
       }
     }
 
-    set_vobject_size(vobject_id, dx, dy) {
-      this.vobject_positions[vobject_id].dx = dx;
-      this.vobject_positions[vobject_id].dy = dy;
+    get_vobject_position(vobject_id) {
+      return this.vobject_positions[vobject_id];
     }
   }
 

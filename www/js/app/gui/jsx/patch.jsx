@@ -26,7 +26,8 @@ function(React, lodash, simple, vobject_factory) {
                 var result = [];
                 this.props.patch_model.graph.iter_dedges(_.bind(function(dedge) {
                   result.push(
-                    <DEdge dedge={dedge} patch_model={this.props.patch_model} />);
+                    <DEdge dedge={dedge} patch_model={this.props.patch_model} 
+                      patch_component={this} />);
                 }, this));
                 return result;
               }, this)()
@@ -84,7 +85,7 @@ function(React, lodash, simple, vobject_factory) {
         return false;
       });
 
-      domNode.on("mouseup", _.bind(function(e) {
+      domNode.one("mouseup", _.bind(function(e) {
         domNode.off("mousemove");
         line.setState({
           visible: false
@@ -117,6 +118,13 @@ function(React, lodash, simple, vobject_factory) {
           toInput);
         this.setState({});
       }, this));
+    },
+
+    updateVobject: function(vobject_component) {
+      // redraw the edges attached to this vobject (maybe it moved)
+      console.log("updateEdges");
+      // XXX for now ..
+      this.forceUpdate();
     }
   });
 
@@ -144,10 +152,12 @@ function(React, lodash, simple, vobject_factory) {
   });
 
   var DEdge = React.createClass({
+    // hard-coded sizing metrics to avoid having to do lookups against the
+    // live elements. TODO - maybe we could look this up once then cache them?
     statics: {
-      output_x_padding: 10,
-      input_x_padding: 10
-    }, 
+      output_x_padding: 30,
+      input_x_padding: 30
+    },
 
     propTypes: {
       dedge: React.PropTypes.object.isRequired,
@@ -159,32 +169,42 @@ function(React, lodash, simple, vobject_factory) {
       var vobject_from = this.props.dedge.from;
       vobject_from_pos = this.props.patch_model.vobject_positions[
         vobject_from.id];
+
+      var vobject_from_elem = simple.find_vobject_elem(vobject_from.id);
+      
       var tail_pos = {
         x: vobject_from_pos.x + this.props.dedge.from_output * DEdge.output_x_padding,
-        y: vobject_from_pos.y + vobject_from_pos.dy
+        y: vobject_from_pos.y + vobject_from_elem.height()
       };
 
       // calculate arrow pos
       var vobject_to = this.props.dedge.to;
       vobject_to_pos = this.props.patch_model.vobject_positions[
         vobject_to.id];
+
       var arrow_pos = {
         x: vobject_to_pos.x + this.props.dedge.to_input * DEdge.input_x_padding,
         y: vobject_to_pos.y
       };
 
-      var style = {
-        strokeWidth: 1,
-        stroke: "rgb(0, 0, 0)"
-      };
-
       return (
-        <line x1={tail_pos.x} 
+        <line className="dedge" x1={tail_pos.x} 
           y1={tail_pos.y} 
           x2={arrow_pos.x}
           y2={arrow_pos.y} 
-          style={style} />
+          onClick={this.onClick}/>
       );
+    },
+
+    onClick: function() {
+      // delete
+      this.props.patch_model.graph.remove_dedge(
+        this.props.dedge.from, 
+        this.props.dedge.from_output,
+        this.props.dedge.to,
+        this.props.dedge.to_input);
+
+      this.props.patch_component.forceUpdate();
     }
   });
 

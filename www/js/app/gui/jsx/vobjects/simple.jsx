@@ -12,43 +12,37 @@ function(React, util, $) {
     },
 
     componentWillMount: function() {
-      this.setState({
-        position: this.props.patch_model.vobject_positions[this.props.vobject.id]
-      });
     },
 
     componentDidMount: function() {
       this.makeDraggable();
-      var domNode = $(this.getDOMNode());
-      this.props.patch_model.set_vobject_size(this.props.vobject.id,
-                                              domNode.outerWidth(true), 
-                                              domNode.outerHeight(true));
     },
 
     componentDidUpdate: function() {
       var domNode = $(this.getDOMNode());
-      this.props.patch_model.set_vobject_size(this.props.vobject.id,
-                                              domNode.outerWidth(true), 
-                                              domNode.outerHeight(true));
     },
 
     makeDraggable: function() {
       $(this.getDOMNode()).draggable({
         drag: _.bind(function(event, ui) {
-          this.setState({
+          // move the patch
+          /* this.setState({
             position: {
               x: ui.position.left,
               y: ui.position.top
             }
-          });
+          });*/
+          this.props.patch_model.set_vobject_position(this.props.vobject.id,
+            ui.position.left,
+            ui.position.top);
+
+          // tell the parent patch to redraw it
+          this.props.patch_component.updateVobject(this);
         }, this),
         stop: _.bind(function(event, ui) {
-          this.setState({
-            position: {
-              x: ui.position.left,
-              y: ui.position.top
-            }
-          });
+          this.props.patch_model.set_vobject_position(this.props.vobject.id,
+              ui.position.left,
+              ui.position.top);
         }, this),
       }).addClass("draggable");
     },
@@ -68,12 +62,12 @@ function(React, util, $) {
     },
 
     render: function() {
-      if (!this.state) return; 
+      var pos = this.props.patch_model.get_vobject_position(this.props.vobject.id);
 
       var style = {
         position: "absolute",
-        top: this.state.position.y,
-        left: this.state.position.x
+        top: pos.y,
+        left: pos.x
       };
 
       return <div className="vobject-simple" data-vobject-id={this.props.vobject.id} 
@@ -98,7 +92,14 @@ function(React, util, $) {
     }
   });
 
+  var find_vobject_elem = function(vobject_id) {
+    return $("[data-vobject-id=" + vobject_id + "]");
+  };
+
   return {
-    SimpleVObjectComponent: SimpleVObjectComponent
+    SimpleVObjectComponent: SimpleVObjectComponent,
+    // XXX: possibly not the right place for this, but only if we ever end up
+    // with different classes of vobject
+    find_vobject_elem: find_vobject_elem
   }
 });

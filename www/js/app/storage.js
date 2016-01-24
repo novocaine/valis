@@ -1,16 +1,13 @@
-define([], function() {
-  let save = function(patch_model, name, version) {
+define([], () => {
+  const save = (patchModel, name, version) => {
     window.localStorage.setItem(
       JSON.stringify([name, version]),
-      JSON.stringify(patch_model_json));
+      JSON.stringify(patchModelJson));
   };
 
-  let load = function(patch_model, name, version) {
+  const load = (patchModel, name, version) => {
 
   };
 
-  return {
-    save: save,
-    load: load
-  }
+  return { save, load };
 });

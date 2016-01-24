@@ -3,6 +3,8 @@
 var path = require("path");
 
 module.exports = function(grunt) {
+  require('load-grunt-tasks')(grunt);
+
   var traceurRuntime = "node_modules/traceur/bin/traceur-runtime.js";
   var requireBaseUrl = "build/es5/js/app";
   var requirePaths = {
@@ -97,35 +99,14 @@ module.exports = function(grunt) {
         }
       }
     },
-
-    jshint: {
-      options: {
-        curly: true,
-        eqeqeq: true,
-        immed: true,
-        latedef: true,
-        newcap: true,
-        noarg: true,
-        sub: true,
-        undef: true,
-        unused: true,
-        boss: true,
-        eqnull: true,
-        browser: true,
-        globals: {
-          jQuery: true,
-          require: true,
-          define: true,
-          /* jasmine */
-          describe: true,
-          it: true
+    eslint: {
+      lint: {
+        options: {
+          configFile: '.eslintrc',
+        },
+        files: {
+          src: ['www/js/app/**/*.js', 'www/js/test/**/*.js']
         }
-      },
-      gruntfile: {
-        src: 'Gruntfile.js'
-      },
-      lib_test: {
-        src: ['lib/**/*.js', 'test/**/*.js']
       }
     },
     watch: {
@@ -133,14 +114,6 @@ module.exports = function(grunt) {
         files: ['www/**'],
         tasks: ['es5']
       },
-      gruntfile: {
-        files: '<%= jshint.gruntfile.src %>',
-        tasks: ['jshint:gruntfile']
-      },
-      lib_test: {
-        files: '<%= jshint.lib_test.src %>',
-        tasks: ['jshint:lib_test', 'qunit']
-      }
     },
     jasmine: {
       taskName: {
@@ -171,12 +144,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks("grunt-contrib-copy");
   grunt.loadNpmTasks('grunt-react');
   grunt.loadNpmTasks('grunt-contrib-jasmine');
+  grunt.loadNpmTasks('grunt-contrib-jasmine');
 
-  // valis tasks.
-  //
-  // build es5 version into build/es5 (for devel); this corporates jsx
+  // build es5 version into build/es5 (for devel); this incorporates jsx
   // compilation and traceur (es6 -> es5) transpilation.
-  grunt.registerTask('es5', ['react:gui', 'jshint', 'traceur', 'copy:es5']);
-  // build minified and concatenated into build/dist using r.js
+  grunt.registerTask('es5', ['eslint:lint', 'react:gui', 'traceur', 'copy:es5']);
+  // build minified and concatenated into build/dist (for distribution) using r.js
   grunt.registerTask('dist', ['es5',  'copy:dist', 'requirejs']);
 };

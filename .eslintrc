@@ -1,0 +1,6 @@
+{
+    "extends": "./node_modules/eslint-config-airbnb/.eslintrc",
+    "env": { 
+        "amd": true
+    }
+}

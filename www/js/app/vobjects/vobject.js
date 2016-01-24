@@ -6,15 +6,16 @@ define(["lib/lodash"], function(_) {
       this.id = _.uniqueId();
     }
 
-    process_args(args) {
+    num_inputs() { throw new Error("abstract"); }
+    num_outputs() { throw new Error("abstract"); }
+
+    toJSON() {
       return {};
     }
 
-    process(context) {
+    getState() {
+      return {};
     }
-
-    num_inputs() { throw new Error("abstract"); }
-    num_outputs() { throw new Error("abstract"); }
   }
 
   return {

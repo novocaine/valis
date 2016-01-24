@@ -193,30 +193,25 @@ define(["lib/lodash"], function(_) {
       // }
       //
       // i.e. you can have multiple edges from each output
-      this.dedges = {};
+      this.dedges = new Map();
 
-      // vobject -> incoming dedges
-      this.dedges_to = {};
+      // lookup of vobject -> incoming dedges (will be in sync with
+      // this.dedges)
+      this.dedges_to = new Map();
 
-      // tracks the number of inputs that have a connected dedge for each vobject
-      // this is used by the engine to deduce when a vobject's input buffers
-      // have been filled and it is ready to process
-      this.num_active_inputs = {};
-
-      // this is just here so its quick to iterate over all the vobjects
-      // (and look them up if need be)
-      this._vobjects = {};
+      // list of vobjects in the graph
+      this.vobjects = new Map();
     }
 
     add_vobject(vobject) {
       // initially, will be a leaf because it has no outputs
       this.leaves[vobject.id] = vobject;
       this.dedges[vobject.id] = {};
-      this._vobjects[vobject.id] = vobject;
+      this.vobjects[vobject.id] = vobject;
     }
 
     remove_vobject(vobject) {
-      delete this._vobjects[vobject.id];
+      delete this.vobjects[vobject.id];
 
       // remove edges going from the object
       delete this.dedges[vobject.id];
@@ -295,10 +290,6 @@ define(["lib/lodash"], function(_) {
           }
         }
       }
-    }
-
-    get vobjects() {
-      return this._vobjects;
     }
   }
 

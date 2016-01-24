@@ -6,8 +6,8 @@ define(["lib/lodash"], function(_) {
       this.id = _.uniqueId();
     }
 
-    num_inputs() { throw new Error("abstract"); }
-    num_outputs() { throw new Error("abstract"); }
+    numInputs() { throw new Error("abstract"); }
+    numOutputs() { throw new Error("abstract"); }
 
     toJSON() {
       return {};

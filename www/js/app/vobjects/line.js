@@ -7,8 +7,8 @@ function(vobject) {
       this.val = initial_value;
     }
 
-    num_inputs() { return 2; }
-    num_outputs() { return 2; }
+    numInputs() { return 2; }
+    numOutputs() { return 2; }
 
     process(context) {
       // process control messages.

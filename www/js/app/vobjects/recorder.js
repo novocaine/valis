@@ -1,8 +1,8 @@
 define(['vobjects/vobject', 'lodash'],
 (vobject, _) => {
   class Recorder extends vobject.VObject {
-    num_inputs() { return 1; }
-    num_outputs() { return 0; }
+    numInputs() { return 1; }
+    numOutputs() { return 0; }
 
     constructor(args) {
       super(args);

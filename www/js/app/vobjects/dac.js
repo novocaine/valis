@@ -2,8 +2,8 @@ define(["vobjects/vobject", "util", "console"],
 function(vobject, util, vconsole) {
   class DAC extends vobject.VObject {
     // strictly stereo, for now
-    num_inputs() { return 2; }
-    num_outputs() { return 0; }
+    numInputs() { return 2; }
+    numOutputs() { return 0; }
 
     generate(context, inputs, outputs) {
       /* copy additively into external output buffers */

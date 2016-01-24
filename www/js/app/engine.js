@@ -34,7 +34,9 @@ define(["lib/lodash"], function(_) {
     }
 
     stop() {
-      this.audio_node.disconnect(this.context.destination);
+      if (this.audio_node) {
+        this.audio_node.disconnect(this.context.destination);
+      }
       this.running = false;
     }
     

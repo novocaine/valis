@@ -1,8 +1,14 @@
+.toolbar
+{
+    border-bottom: 1px solid #ccc;
+    padding: 1em;
+}
+
 .palette
 {
     /* font-family: "Inconsolata"; */
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 1em;
+    display: inline;
+    padding-left: 0;
 }
 
 .palette li
@@ -31,4 +37,8 @@
     cursor: pointer;
     stroke-width: 3;
     stroke: #ccc;
+}
+
+button.enable-audio {
+    float: right;
 }

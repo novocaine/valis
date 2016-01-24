@@ -16,8 +16,10 @@ function(React, jqueryui, $, patch_component, vobject_factory) {
     render: function() {
       return (
         <div className="doc">
-          <Palette doc={this} />
-          <EnableAudio doc={this} />
+          <div className="toolbar">
+            <Palette doc={this} />
+            <EnableAudio doc={this} />
+          </div>
           <patch_component.PatchComponent ref="rootPatch" doc={this} 
             patch_model={this.props.patch_model} />
         </div>

@@ -39,7 +39,7 @@ function(React, patch, doc, engine, vobject_factory) {
       return this.vobject_positions[vobject_id];
     }
 
-    enable_audio(enabled) {
+    enable_audio(enabled = true) {
       enabled ? this.engine.start() : this.engine.stop();
     }
 
@@ -49,10 +49,15 @@ function(React, patch, doc, engine, vobject_factory) {
   }
 
   var init = function() {
-    // create a new blank document and render the gui
+    // entry point for the app. create a new blank document and render the gui
     var model = new PatchModel();
+
+    // enable audio by default
+    model.enable_audio();
+
     React.renderComponent(doc.Doc({ patch_model: model }), 
       document.body);
+
   };
 
   return {

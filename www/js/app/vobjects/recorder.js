@@ -1,4 +1,4 @@
-define(['vobjects/vobject', 'lodash'],
+define(['app/vobjects/vobject', 'lodash'],
 (vobject, _) => {
   class Recorder extends vobject.VObject {
     numInputs() { return 1; }
@@ -10,7 +10,7 @@ define(['vobjects/vobject', 'lodash'],
     }
 
     generate(context, inputs, outputs) {
-      this.record[context.sample_time] =
+      this.record[context.sampleTime] =
         _.mapValues(inputs, (input) => input.toString());
       return [];
     }

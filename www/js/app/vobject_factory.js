@@ -1,22 +1,20 @@
-define(["app/vobjects/line", "app/vobjects/js", 
-        "app/vobjects/dac", "app/vobjects/cycle"], 
-  function(Line, JS, DAC, Cycle) {
+define(['app/vobjects/js', 'app/vobjects/dac', 'app/vobjects/cycle',
+        'lodash'],
+(JS, DAC, Cycle, _) => {
   // register them here
-  var class_list = [Line, JS, DAC, Cycle];
+  const classList = [JS, DAC, Cycle];
+  const vobjectClasses = _.object(classList.map((_class) =>
+    [_class.vobjectClass, _class]
+  ));
 
-  var vobject_classes = _.object(class_list.map(function(_class) {
-    return [_class.vobject_class, _class];
-  }));
-
-  var create = function(vobject_classname) {
-    if (!(vobject_classname in vobject_classes)) {
-      throw new Error("vobject with class " + vobject_classname + " not found");
+  const create = (vobjectClassname) => {
+    if (!(vobjectClassname in vobjectClasses)) {
+      throw new Error(`vobject with class ${vobjectClassname} not found`);
     }
-    return new vobject_classes[vobject_classname];
+    return new vobjectClasses[vobjectClassname];
   };
 
   return {
-    vobject_classes: vobject_classes,
-    create: create
+    vobjectClasses, create
   };
 });

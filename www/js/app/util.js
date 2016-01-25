@@ -1,9 +1,8 @@
 define([],
-function() {
-  return { 
-    is_audio_array: function(object) {
+() => {
+  return {
+    isAudioArray: (object) =>
       // typeof doesn't even remotely work :/
-      return Object.prototype.toString.call(object) == "[object Float32Array]"
-    }
-  }
+      Object.prototype.toString.call(object) === '[object Float32Array]'
+  };
 });

@@ -1,13 +1,11 @@
-define(["lib/lodash"], function(_) {
-  "use strict";
-
+define(['lodash'], (_) => {
   class VObject {
     constructor() {
       this.id = _.uniqueId();
     }
 
-    numInputs() { throw new Error("abstract"); }
-    numOutputs() { throw new Error("abstract"); }
+    numInputs() { throw new Error('abstract'); }
+    numOutputs() { throw new Error('abstract'); }
 
     toJSON() {
       return {};
@@ -19,6 +17,6 @@ define(["lib/lodash"], function(_) {
   }
 
   return {
-    VObject: VObject
-  }
+    VObject
+  };
 });

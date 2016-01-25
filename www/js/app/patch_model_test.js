@@ -1,15 +1,16 @@
-define(["patch_model", "vobjects/cycle"], function(PatchModel, cycle) {
-  describe('PatchModel', function() {
-    it('should toJSON with a vobject in it', function() {
-      var patch_model = new PatchModel();
-      var graph = patch_model.graph;
-      var cycle = new Cycle();
-      graph.add_vobject(cycle);
-      var json = patch_model.toJSON();
-      expect(_.equals(json, { 
+define(['app/patch_model', 'app/vobjects/cycle', 'lodash'],
+(PatchModel, Cycle, _) => {
+  describe('PatchModel', () => {
+    it('should toJSON with a vobject in it', () => {
+      const patchModel = new PatchModel();
+      const graph = patchModel.graph;
+      const cycle = new Cycle();
+      graph.addVobject(cycle);
+      const json = patchModel.toJSON();
+      expect(_.equals(json, {
         vobjects: {
           [cycle.id]: {
-            vobject_class: "cycle~",
+            vobjectClass: 'cycle~',
             frequency: cycle.frequency
           }
         }

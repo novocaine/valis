@@ -1,5 +1,5 @@
-define(["vobjects/vobject", "vobjects/vobject_args"],
-function(vobject, vobject_args) {
+define(['app/vobjects/vobject'],
+(vobject) => {
   class Cycle extends vobject.VObject {
     numInputs() { return 1; }
     numOutputs() { return 1; }
@@ -10,18 +10,18 @@ function(vobject, vobject_args) {
     }
 
     generate(context, inputs, outputs) {
-      let frequency = 0 in inputs ? inputs[0] : this.frequency;
-      let radians_per_sample = (frequency * 2 * Math.PI) / context.sample_rate;
-      let result = context.get_buffer();
-      for (var i=0; i < result.length; i++) {
-        result[i] = Math.cos((context.sample_time + i) * radians_per_sample);
+      const frequency = 0 in inputs ? inputs[0] : this.frequency;
+      const radiansPerSample = (frequency * 2 * Math.PI) / context.sampleRate;
+      const result = context.getBuffer();
+      for (let i = 0; i < result.length; i++) {
+        result[i] = Math.cos((context.sampleTime + i) * radiansPerSample);
       }
 
       return [result];
     }
   }
 
-  Cycle.vobject_class = "cycle~";
+  Cycle.vobjectClass = 'cycle~';
 
   return Cycle;
 });

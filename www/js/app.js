@@ -1,6 +1,6 @@
 requirejs.config({
     //By default load any module IDs from js/lib
-    baseUrl: 'js/app',
+    baseUrl: 'js/lib',
     //except, if the module ID starts with "app",
     //load it from the js/app directory. paths
     //config is relative to the baseUrl, and
@@ -9,7 +9,7 @@ requirejs.config({
     paths: {
         app: '../app',
         lib: '../lib'
-    }
+    },
 });
 
 requirejs(['lib/jquery', 'app/gui/main'],

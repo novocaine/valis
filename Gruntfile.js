@@ -4,8 +4,8 @@ var path = require("path");
 
 module.exports = function(grunt) {
   require('load-grunt-tasks')(grunt);
+  require('time-grunt')(grunt);
 
-  var traceurRuntime = "node_modules/traceur/bin/traceur-runtime.js";
   var requireBaseUrl = "build/es5/js/app";
   var requirePaths = {
       lib: '../lib',
@@ -23,28 +23,15 @@ module.exports = function(grunt) {
       '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
       ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n',
 
-    react: {
-      gui: {
-        files: [{
-          expand: true,
-          cwd: 'www/js',
-          src: ['app/**/*.jsx'],
-          dest: 'build/es5/js',
-          ext: '.js'
-        }]
-      }
-    },
-
-    traceur: {
+    babel: {
       options: {
-        traceurOptions: "--experimental --source-maps",
-        traceurCommand: path.resolve(path.join(__dirname, 
-          "node_modules/traceur/src/node/command.js"))
+        sourceMap: true,
+        presets: ['es2015', 'react']
       },
       es5: {
         files: [{
           cwd: 'www/js',
-          src: ['app/**/*.js', 'app.js', 'test/**/*.js'],
+          src: ['app/**/*.js', 'app.js'],
           dest: 'build/es5/js',
           expand: true
         }]
@@ -54,7 +41,7 @@ module.exports = function(grunt) {
     copy: {
       es5: {
         files: [{
-          expand: true, 
+          expand: true,
           cwd: 'www/js',
           src: ['lib/**/*.js'],
           dest: 'build/es5/js'
@@ -63,12 +50,6 @@ module.exports = function(grunt) {
           expand: true,
           src: ['index.html', 'tests.html', 'css/**/*.css'],
           dest: 'build/es5/'
-        }, { 
-          // copy user traceur into libs
-          flatten: true,
-          expand: true,
-          src: [traceurRuntime],
-          dest: 'build/es5/js/lib/'
         }]
       },
       dist: {
@@ -77,11 +58,6 @@ module.exports = function(grunt) {
           expand: true,
           src: ['index.html', 'tests.html'],
           dest: 'build/dist/'
-        }, {
-          expand: true,
-          flatten: true,
-          src: traceurRuntime,
-          dest: 'build/dist/js/lib/'
         }]
       }
     },
@@ -105,7 +81,7 @@ module.exports = function(grunt) {
           configFile: '.eslintrc',
         },
         files: {
-          src: ['www/js/app/**/*.js', 'www/js/test/**/*.js']
+          src: ['www/js/app/**/*.js', 'www/js/app/**/*.jsx', 'www/js/test/**/*.js']
         }
       }
     },
@@ -117,7 +93,7 @@ module.exports = function(grunt) {
     },
     jasmine: {
       taskName: {
-        src: ['build/dist/js/lib/traceur-runtime.js', 'build/dist/js/app.js'],
+        src: ['build/dist/js/app.js'],
 
         options: {
           specs: 'www/js/app/engine_test.js',
@@ -125,7 +101,7 @@ module.exports = function(grunt) {
           templateOptions: {
             requireConfig: {
               baseUrl: requireBaseUrl,
-              paths: requirePaths 
+              paths: requirePaths
             }
           }
         }
@@ -140,15 +116,13 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-requirejs');
-  grunt.loadNpmTasks("grunt-traceur-simple");
-  grunt.loadNpmTasks("grunt-contrib-copy");
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-react');
-  grunt.loadNpmTasks('grunt-contrib-jasmine');
   grunt.loadNpmTasks('grunt-contrib-jasmine');
 
   // build es5 version into build/es5 (for devel); this incorporates jsx
-  // compilation and traceur (es6 -> es5) transpilation.
-  grunt.registerTask('es5', ['eslint:lint', 'react:gui', 'traceur', 'copy:es5']);
+  // compilation and babel (es6 -> es5) transpilation.
+  grunt.registerTask('es5', ['babel', 'copy:es5']);
   // build minified and concatenated into build/dist (for distribution) using r.js
-  grunt.registerTask('dist', ['es5',  'copy:dist', 'requirejs']);
+  grunt.registerTask('dist', ['eslint:lint', 'es5', 'copy:dist', 'requirejs']);
 };

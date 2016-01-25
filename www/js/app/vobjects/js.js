@@ -1,5 +1,5 @@
-define(["vobjects/vobject"],
-function(vobject, util, vconsole) {
+define(['app/vobjects/vobject'],
+(vobject) => {
   class JS extends vobject.VObject {
     numInputs() { return 1; }
     numOutputs() { return 1; }
@@ -14,7 +14,7 @@ function(vobject, util, vconsole) {
     }
   }
 
-  JS.vobject_class = "js";
+  JS.vobjectClass = 'js';
 
   return JS;
 });

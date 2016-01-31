@@ -23,6 +23,9 @@ define(['app/vobjects/vobject'],
 
   JS.vobjectClass = 'js';
   JS.vobjectSymbol = '&gt;';
+  JS.processArgString = (argString) => {
+    return [argString];
+  };
 
   return JS;
 });

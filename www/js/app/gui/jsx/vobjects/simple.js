@@ -1,5 +1,6 @@
-define(['react', 'react-dom', 'jquery', 'lodash'],
-(React, ReactDOM, $, _) => {
+define(['react', 'react-dom', 'jquery', 'lodash',
+        'lib/react-textarea-autosize/TextareaAutosize'],
+(React, ReactDOM, $, _, Textarea) => {
   /**
    * Implementation of a default vobject with no fancy custom gui
    */
@@ -73,7 +74,7 @@ define(['react', 'react-dom', 'jquery', 'lodash'],
           <span className="vobject-class"
             dangerouslySetInnerHTML={ { __html: this.props.vobject.constructor.vobjectSymbol } }
           />
-          <textarea className="args" rows="1" cols="10" onBlur={this.onChangeArgs}
+          <Textarea className="args" rows={1} onBlur={this.onChangeArgs}
             defaultValue={this.props.vobject.args.join()}
           />
           <div className="outputs">
@@ -90,7 +91,7 @@ define(['react', 'react-dom', 'jquery', 'lodash'],
     },
 
     onChangeArgs(e) {
-      const args = _.map(e.target.value.split(' '), (elem) => elem.trim());
+      const args = this.props.vobject.constructor.processArgString(e.target.value);
       if (_.isEqual(this.props.vobject.args, args)) {
         return;
       }

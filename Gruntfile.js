@@ -31,7 +31,7 @@ module.exports = function(grunt) {
       es5: {
         files: [{
           cwd: 'www/js',
-          src: ['app/**/*.js', 'app.js'],
+          src: ['app/**/*.js', 'app.js', 'lib-es6/**/*.js'],
           dest: 'build/es5/js',
           expand: true
         }]

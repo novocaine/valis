@@ -17,6 +17,10 @@ define(['lodash'], (_) => {
     }
   }
 
+  VObject.processArgSting = (argString) => {
+    return _.map(argString.split(' '), (elem) => elem.trim());
+  };
+
   return {
     VObject
   };

@@ -28,6 +28,10 @@ define(['react', 'react-dom', 'jquery', 'lodash'],
       e.stopPropagation();
     },
 
+    onDoubleClick(e) {
+      this.showPropertiesPage();
+    },
+
     makeDraggable() {
       $(ReactDOM.findDOMNode(this)).draggable({
         drag: (event, ui) => {
@@ -66,7 +70,12 @@ define(['react', 'react-dom', 'jquery', 'lodash'],
               )
             }
           </div>
-          <div className="title">{this.props.vobject.constructor.vobjectClass}</div>
+          <span className="vobject-class"
+            dangerouslySetInnerHTML={ { __html: this.props.vobject.constructor.vobjectSymbol } }
+          />
+          <textarea className="args" rows="1" cols="10" onBlur={this.onChangeArgs}
+            defaultValue={this.props.vobject.args.join()}
+          />
           <div className="outputs">
             {
               _.range(this.props.vobject.numOutputs()).map((i) =>
@@ -78,7 +87,17 @@ define(['react', 'react-dom', 'jquery', 'lodash'],
           </div>
         </div>
       );
-    }
+    },
+
+    onChangeArgs(e) {
+      const args = _.map(e.target.value.split(' '), (elem) => elem.trim());
+      if (_.isEqual(this.props.vobject.args, args)) {
+        return;
+      }
+      this.props.patchModel.updateVobjectArgs(this.props.vobject, args);
+      // re-render so that all vobject refs gets updated
+      this.props.patchComponent.setState({});
+    },
   });
 
   const findVobjectElem = (vobjectId) => {

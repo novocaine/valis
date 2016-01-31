@@ -1,7 +1,8 @@
 define(['lodash'], (_) => {
   class VObject {
-    constructor() {
+    constructor(...args) {
       this.id = _.uniqueId();
+      this.args = args;
     }
 
     numInputs() { throw new Error('abstract'); }

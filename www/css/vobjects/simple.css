@@ -1,8 +1,10 @@
 .vobject-simple
 {
     /* font-family: "Inconsolata"; */
-    border: 1px solid blue; 
     position: relative;
+    border-radius:8px;
+    border: 6px solid #556677; 
+    padding: 2px 4px 0px 4px;
 }
 
 .vobject-simple.draggable
@@ -14,6 +16,18 @@
 .vobject-simple .outputs
 {
     height: 3px; 
+    margin-left: 8px;
+    position: relative;
+}
+
+.vobject-simple .inputs
+{
+    top: -8px;
+}
+
+.vobject-simple .outputs
+{
+    top: 3px;
 }
 
 .vobject-simple .title
@@ -25,10 +39,24 @@
 .vobject-simple .output
 {
     width: 20px;
-    height: 3px;
-    background-color: blue;
+    height: 6px;
+    background-color: #aaa;
     display: inline-block;
     vertical-align: top;
     cursor: crosshair;
     margin-right: 10px;
+}
+
+.vobject-simple textarea 
+{
+    border: none;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.vobject-simple .vobject-class
+{
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 0.3em;
 }

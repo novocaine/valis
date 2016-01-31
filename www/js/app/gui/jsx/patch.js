@@ -27,9 +27,9 @@ define(['react',
           <svg>
             <DrawingDedgeLine ref="drawingDedgeLine" />
             {
-                _.map(this.props.patchModel.graph.getAllDedges(), (dedge, id) =>
+                _.map(this.props.patchModel.graph.getAllDedges(), (dedge) =>
                     <DEdge dedge={dedge} patchModel={this.props.patchModel}
-                      patchComponent={this} key={id} />
+                      patchComponent={this} key={dedge.id()} />
                 )
             }
           </svg>
@@ -49,6 +49,8 @@ define(['react',
             ui.position.top - offset.top);
           // trigger re-render
           this.setState({});
+          // focus args of the new object, XXX: seems to break into react's dom
+          $(`[data-vobject-id=${vobject.id}] textarea`).focus();
         }
       });
     },
@@ -144,8 +146,11 @@ define(['react',
     // hard-coded sizing metrics to avoid having to do lookups against the
     // live elements. TODO - maybe we could look this up once then cache them?
     statics: {
-      outputX_padding: 30,
-      inputX_padding: 30
+      outputXPadding: 30,
+      outputXLeftMargin: 28,
+      inputXPadding: 30,
+      inputXLeftMargin: 28,
+      vobjectHeight: 44
     },
 
     propTypes: {
@@ -160,10 +165,10 @@ define(['react',
       const vobjectFromPos = this.props.patchModel.vobjectPositions[
         vobjectFrom.id];
 
-      const vobjectFromElem = simple.findVobjectElem(vobjectFrom.id);
       const tailPos = {
-        x: vobjectFromPos.x + this.props.dedge.fromOutput * DEdge.outputX_padding,
-        y: vobjectFromPos.y + vobjectFromElem.height()
+        x: vobjectFromPos.x + DEdge.outputXLeftMargin + (
+          this.props.dedge.fromOutput * DEdge.outputXPadding),
+        y: vobjectFromPos.y + DEdge.vobjectHeight
       };
 
       // calculate arrow pos
@@ -172,7 +177,8 @@ define(['react',
         vobjectTo.id];
 
       const arrowPos = {
-        x: vobjectToPos.x + this.props.dedge.toInput * DEdge.inputX_padding,
+        x: vobjectToPos.x + DEdge.inputXLeftMargin + (
+          this.props.dedge.toInput * DEdge.inputXPadding),
         y: vobjectToPos.y
       };
 

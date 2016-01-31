@@ -5,16 +5,24 @@ define(['app/vobjects/vobject'],
     numOutputs() { return 1; }
 
     constructor(script) {
-      super();
+      super(script);
       this.script = script;
     }
 
     generate(contxt, inputs, outputs) {
-      return eval(this.script);
+      const result = eval(this.script);
+      // if result isn't an array, make it into one (i.e output one value) as a
+      // convenience
+      if (Array.isArray(result)) {
+        return result;
+      }
+
+      return [result];
     }
   }
 
   JS.vobjectClass = 'js';
+  JS.vobjectSymbol = '&gt;';
 
   return JS;
 });

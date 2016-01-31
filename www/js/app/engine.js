@@ -123,24 +123,15 @@ define(['lodash'], (_) => {
   }
 
   class BufferPool {
-    /* simple pool that re-uses allocated buffers to avoid unnecessary
-     * allocations and memory churn - maybe the allocator would do this
-     * anyway, maybe it wouldn't */
     constructor(size) {
       this.heap = [];
       this.size = size;
     }
 
     getBuffer() {
-      const buf = this.heap.pop();
-      if (!buf) {
-        return new AudioArrayType(this.size);
-      }
-      return buf;
-    }
-
-    releaseBuffer(buf) {
-      this.heap.push(buf);
+      /* just use the JS engine's heap for now, could optimize this to try to
+       * re-use them later */
+      return new AudioArrayType(this.size);
     }
   }
 
@@ -158,6 +149,10 @@ define(['lodash'], (_) => {
       this.fromOutput = fromOutput;
       this.to = to;
       this.toInput = toInput;
+    }
+
+    id() {
+      return `${this.from.id},${this.fromOutput},${this.to.id},${this.toInput}`;
     }
   }
 
@@ -200,26 +195,41 @@ define(['lodash'], (_) => {
 
       // remove edges going to the object
       _.forOwn(this.dedgesTo[vobject.id], (dedge) => {
-        delete this.dedges[dedge.from.id];
+        const newEdges = _.filter(this.dedges[dedge.from.id][dedge.fromOutput],
+          (iterDedge) => {
+            return iterDedge.to !== vobject;
+          });
+        this.dedges[dedge.from.id][dedge.fromOutput] = newEdges;
       });
-
+      delete this.dedgesTo[vobject.id];
       delete this.leaves[vobject.id];
     }
 
+    replaceVobject(vobject, newVobject) {
+      this.addVobject(newVobject);
+      _.forOwn(this.dedgesTo[vobject.id], (dedge) => {
+        // TODO: what if the number of inputs changes?
+        this.addDedge(dedge.from, dedge.fromOutput, newVobject, dedge.toInput);
+      });
+      _.forOwn(this.dedges[vobject.id], (edges) => {
+        _.forOwn(edges, (dedge) => {
+          // TODO: what if the number of outputs changes?
+          this.addDedge(newVobject, dedge.fromOutput, dedge.to, dedge.toInput);
+        });
+      });
+      this.removeVobject(vobject);
+    }
+
     addDedge(from, fromOutput, to, toInput) {
-      let outputEdges = null;
+      console.log(`addDedge ${from.id} ${fromOutput} ${to.id} ${toInput}`);
       if (!(from.id in this.dedges)) {
-        this.degdges[from.id] = {};
-      } else {
-        outputEdges = this.dedges[from.id][fromOutput];
+        this.dedges[from.id] = {};
       }
-      if (!outputEdges) {
-        outputEdges = [];
-        this.dedges[from.id][fromOutput] = outputEdges;
+      if (!this.dedges[from.id][fromOutput]) {
+        this.dedges[from.id][fromOutput] = [];
       }
-
+      const outputEdges = this.dedges[from.id][fromOutput];
       const dedge = new DEdge(from, fromOutput, to, toInput);
-
       outputEdges.push(dedge);
 
       if (!(to.id in this.dedgesTo)) {
@@ -231,6 +241,7 @@ define(['lodash'], (_) => {
     }
 
     removeDedge(from, fromOutput, to, toInput) {
+      console.log(`removeDedge ${from.id} ${fromOutput} ${to.id} ${toInput}`);
       const edges = this.dedges[from.id][fromOutput];
       for (let i = 0; i < edges.length; i++) {
         if (edges[i].from === from && edges[i].fromOutput === fromOutput
@@ -262,11 +273,11 @@ define(['lodash'], (_) => {
 
     // XXX - is there a syntax for making this a generator??
     getAllDedges() {
-      const result = {};
+      const result = [];
       _.forOwn(this.dedges, (outputs) => {
         _.forOwn(outputs, (dedges) => {
-          _.forOwn(dedges, (dedge, id) => {
-            result[id] = dedge;
+          _.each(dedges, (dedge) => {
+            result.push(dedge);
           });
         });
       });

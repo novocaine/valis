@@ -1,4 +1,5 @@
-define(['app/engine', 'lodash'], (engine, _) => {
+define(['app/engine', 'lodash', 'app/vobject_factory'],
+(engine, _, vobjectFactory) => {
   class PatchModel {
     /**
      * Constructs a blank patch
@@ -14,6 +15,15 @@ define(['app/engine', 'lodash'], (engine, _) => {
       // add to underlying graph
       this.graph.addVobject(vobject);
       this.vobjectPositions[vobject.id] = { x, y };
+    }
+
+    updateVobjectArgs(vobject, args) {
+      // delete and re-instantiate the object with new arguments
+      const newVobject = vobjectFactory.create(
+        vobject.constructor.vobjectClass, ...args);
+      this.graph.replaceVobject(vobject, newVobject);
+      this.vobjectPositions[newVobject.id] = this.vobjectPositions[vobject.id];
+      delete this.vobjectPositions[vobject.id];
     }
 
     // keep positions and sizes of vobjects up to date here after each render

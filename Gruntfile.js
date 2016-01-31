@@ -3,7 +3,7 @@
 var path = require("path");
 
 module.exports = function(grunt) {
-  require('load-grunt-tasks')(grunt);
+  /* require('load-grunt-tasks')(grunt); */
   require('time-grunt')(grunt);
 
   var requireBaseUrl = "build/es5/js/app";
@@ -68,7 +68,7 @@ module.exports = function(grunt) {
         options: {
           baseUrl: requireBaseUrl,
           mainConfigFile: "build/es5/js/app.js",
-          name: "app",
+          name: 'app',
           paths: requirePaths,
           out: "build/dist/js/app.js",
           include: 'requireLib'
@@ -87,38 +87,18 @@ module.exports = function(grunt) {
     },
     watch: {
       scripts: {
-        files: ['www/**'],
+        files: ['www/css/**/*.css', 'www/js/app/**/*.js'],
         tasks: ['es5']
-      },
-    },
-    jasmine: {
-      taskName: {
-        src: ['build/dist/js/app.js'],
-
-        options: {
-          specs: 'www/js/app/engine_test.js',
-          template: require('grunt-template-jasmine-requirejs'),
-          templateOptions: {
-            requireConfig: {
-              baseUrl: requireBaseUrl,
-              paths: requirePaths
-            }
-          }
-        }
       }
     }
 
   });
 
   // These plugins provide necessary tasks.
-  grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-requirejs');
   grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-react');
-  grunt.loadNpmTasks('grunt-contrib-jasmine');
+  grunt.loadNpmTasks('grunt-babel');
 
   // build es5 version into build/es5 (for devel); this incorporates jsx
   // compilation and babel (es6 -> es5) transpilation.

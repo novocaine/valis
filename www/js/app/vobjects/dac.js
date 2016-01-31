@@ -13,9 +13,14 @@ define(['app/vobjects/vobject', 'app/util', 'app/console'],
         }
 
         const ib = inputs[i];
+        if (ib === null) {
+          throw new Error(`input ${i} === null`);
+        }
+
         if (!util.isAudioArray(ib)) {
-          throw new Error(`input ${i} received non-audio: ` +
-            `${(typeof ib).toString()}: ${ib.toString().slice(0, 100)}`);
+          const type = `${(typeof ib).toString()}`;
+          const str = ib ? `${ib.toString().slice(0, 100)}` : '';
+          throw new Error(`input ${i} received non-audio: ${type}, ${str}`);
         }
 
         const buffer = context.extOutputBuffers[i];
@@ -33,7 +38,8 @@ define(['app/vobjects/vobject', 'app/util', 'app/console'],
     }
   }
 
-  DAC.vobjectClass = 'dac~';
+  DAC.vobjectClass = 'output';
+  DAC.vobjectSymbol = '&#x1f50a;';
 
   return DAC;
 });

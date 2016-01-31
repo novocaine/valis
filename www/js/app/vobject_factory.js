@@ -7,11 +7,11 @@ define(['app/vobjects/js', 'app/vobjects/dac', 'app/vobjects/cycle',
     [_class.vobjectClass, _class]
   ));
 
-  const create = (vobjectClassname) => {
+  const create = (vobjectClassname, ...args) => {
     if (!(vobjectClassname in vobjectClasses)) {
       throw new Error(`vobject with class ${vobjectClassname} not found`);
     }
-    return new vobjectClasses[vobjectClassname];
+    return new vobjectClasses[vobjectClassname](...args);
   };
 
   return {

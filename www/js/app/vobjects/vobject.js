@@ -15,11 +15,11 @@ define(['lodash'], (_) => {
     getState() {
       return {};
     }
-  }
 
-  VObject.processArgSting = (argString) => {
-    return _.map(argString.split(' '), (elem) => elem.trim());
-  };
+    static processArgString(argString) {
+      return _.map(argString.split(' '), (elem) => elem.trim());
+    }
+  }
 
   return {
     VObject

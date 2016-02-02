@@ -19,13 +19,14 @@ define(['app/vobjects/vobject'],
 
       return [result];
     }
+
+    static processArgString(argString) {
+      return [argString];
+    }
   }
 
   JS.vobjectClass = 'js';
   JS.vobjectSymbol = '&gt;';
-  JS.processArgString = (argString) => {
-    return [argString];
-  };
 
   return JS;
 });

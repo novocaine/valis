@@ -7,14 +7,18 @@ define(['app/vobjects/vobject', 'app/util'],
     constructor(frequency = 440) {
       super(frequency);
       this.frequency = frequency;
+      this._prevx = 0.0;
     }
 
     generateXmodResult(context, frequency) {
       const result = context.getBuffer();
+      let x = this._prevx;
       for (let i = 0; i < result.length; i++) {
-        const radiansPerSample = frequency[i] * 2 * Math.PI / context.sampleRate;
-        result[i] = Math.cos((context.sampleTime + i) * radiansPerSample);
+        const radiansPerSample = (frequency[i] * 2 * Math.PI) / context.sampleRate;
+        x += radiansPerSample;
+        result[i] = Math.cos(x);
       }
+      this._prevx = x;
       return [result];
     }
 

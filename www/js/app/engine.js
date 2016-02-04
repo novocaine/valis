@@ -101,8 +101,11 @@ define(['lodash'], (_) => {
       const getOutput = (vobject, output) => {
         const inputs = _.reduce(this.graph.dedgesTo[vobject.id],
           (memo, inputDedge, toInput) => {
-            memo[toInput] = getOutput(inputDedge.from,
+            const result = getOutput(inputDedge.from,
               inputDedge.fromOutput);
+            if (result !== undefined) {
+              memo[toInput] = result;
+            }
             return memo;
           }, {});
 
@@ -113,7 +116,7 @@ define(['lodash'], (_) => {
           return result[output];
         }
 
-        return null;
+        return undefined;
       };
 
       _.forOwn(this.graph.leaves, (vobject) =>

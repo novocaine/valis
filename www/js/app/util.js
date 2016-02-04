@@ -1,8 +1,11 @@
 define([],
 () => {
   return {
-    isAudioArray: (object) =>
+    isAudioArray: (object) => {
       // typeof doesn't even remotely work :/
-      Object.prototype.toString.call(object) === '[object Float32Array]'
+      return Object.prototype.toString.call(object) === '[object Float32Array]';
+    },
+
+    allocBuffer: (samples) => new Float32Array(samples)
   };
 });

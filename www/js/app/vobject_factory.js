@@ -1,9 +1,9 @@
 define(['app/vobjects/js', 'app/vobjects/dac', 'app/vobjects/cycle',
-        'app/vobjects/binary_ops',
+        'app/vobjects/binary_ops', 'app/vobjects/delay',
         'lodash'],
-(JS, DAC, Cycle, binaryOps, _) => {
+(JS, DAC, Cycle, binaryOps, Delay, _) => {
   // register them here
-  const classList = [JS, DAC, Cycle, binaryOps.Mul, binaryOps.Add];
+  const classList = [JS, DAC, Cycle, binaryOps.Mul, binaryOps.Add, Delay];
   const vobjectClasses = _.object(classList.map((_class) =>
     [_class.vobjectClass, _class]
   ));

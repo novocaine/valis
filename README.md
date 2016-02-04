@@ -30,3 +30,19 @@ In progress - move along.
 * Subpatches
 * Some sort of compatibility with Pure Data patches
 * Investigate transpiling Pure Data modules using emscripten and duct tape
+
+## TODO - Optimizations
+
+Currently hardly any optimization has been done, the code focuses on simplicity
+and ease of implementation of modules. But here's the hitlist that should at
+least be done for the framework and core modules:
+
+* Copying of buffer data using [copyWithin](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/copyWithin) rather than just naively doing the copies in JS. One would expect the browser can directly use SIMD etc to blaze it. This only really helps straight copy situations like in the DAC, delay, not sure it's all that big a deal.
+* [simd.js](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SIMD) once [Chrome supports it](https://bugs.chromium.org/p/v8/issues/detail?id=4124).
+* Culling the audio processing graph for things that aren't connected. This is
+  tricky because nodes could have other side-effects - maybe some sort of
+  opt-in flag?
+* Memoization of output for multiply connected outputs (no brainer).
+* Fixed buffer allocation - currently we just new() when we need them. Not sure
+  if this is necessarily all that helpful. Maybe the browser's heap works well if the
+  allocations are following a repeated pattern as we do when processing audio.

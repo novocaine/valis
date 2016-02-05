@@ -18,7 +18,7 @@ define(['app/vobjects/vobject', 'app/util'],
       const secondIsAa = util.isAudioArray(inputs[1]);
 
       if (firstIsAa && secondIsAa) {
-        const result = context.get_buffer();
+        const result = context.getBuffer();
         for (let i = 0; i < inputs[0].length; i++) {
           result[i] = this.fn(inputs[0][i], inputs[1][i]);
         }

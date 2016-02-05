@@ -24,6 +24,8 @@ define(['lodash'], (_) => {
 
       this.audioNode.connect(this.context.destination);
       this.running = true;
+
+      this.prevOutputValues = {};
     }
 
     stop() {
@@ -58,7 +60,7 @@ define(['lodash'], (_) => {
         this.graph,
         this.bufferPool);
 
-      this.audioProcess.run();
+      this.prevOutputValues = this.audioProcess.run(this.prevOutputValues);
     }
 
     writeSilence(extOutputBuffers) {
@@ -72,6 +74,7 @@ define(['lodash'], (_) => {
   }
 
   class AudioProcess {
+    // has the lifetime of one onaudioprocess callback
     constructor(sampleTime,
         sampleRate,
         extInputBuffers,
@@ -87,8 +90,11 @@ define(['lodash'], (_) => {
       this.inputBuffers = {};
     }
 
-    run() {
-      // generate the graph's data for one sample
+    run(prevOutputValues) {
+      // Generate the graph's data for one sample.
+      //
+      // prevOutputValues is the outputValues of the previous run(), used for
+      // handling feedback loops.
       const context = {
         sampleTime: this.sampleTime,
         sampleRate: this.sampleRate,
@@ -98,7 +104,33 @@ define(['lodash'], (_) => {
           this.bufferPool) : null
       };
 
+      // recording of all outputs generated during this traversal; returned to
+      // the caller who then passes it forward as prevOutputValues to the next
+      // run
+      const outputValues = {};
+
+      // tracks which objects have been visited during this traversal
+      const visited = {};
+
       const getOutput = (vobject, output) => {
+        const outputPath = `${vobject.id}[${output}]`;
+
+        // check in cache
+        const cachedResult = _.get(outputValues, outputPath, undefined);
+
+        // TODO - so we're not caching when a vobject returns falsy or [] ..
+        if (cachedResult !== undefined) {
+          return cachedResult;
+        }
+
+        // check if we have a circularity
+        if (visited[vobject.id]) {
+          // feedback loop, provide val from previous run
+          return _.get(prevOutputValues, outputPath, undefined);
+        }
+        visited[vobject.id] = true;
+
+        // eagerly evaluate arguments
         const inputs = _.reduce(this.graph.dedgesTo[vobject.id],
           (memo, inputDedge, toInput) => {
             const result = getOutput(inputDedge.from,
@@ -109,8 +141,12 @@ define(['lodash'], (_) => {
             return memo;
           }, {});
 
+        // do actual work of this vobject
         const result = vobject.generate(context, inputs,
           this.graph.dedges[vobject.id]);
+
+        // cache output values
+        outputValues[vobject.id] = result;
 
         if (result && result.length) {
           return result[output];
@@ -122,6 +158,8 @@ define(['lodash'], (_) => {
       _.forOwn(this.graph.leaves, (vobject) =>
         getOutput(vobject, 0)
       );
+
+      return outputValues;
     }
   }
 

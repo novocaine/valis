@@ -35,12 +35,19 @@ define(['lodash', 'app/vobjects/vobject'], (_, vobject) => {
         type: data[0] & 0xf0,
         note: data[1],
         velocity: data[2],
+        timeStamp: event.receivedTime
       };
       this._messages.push(msg);
     }
 
     generate(context, inputs, outputs) {
-      const result = [this._messages];
+      const result = [this._messages.map((msg) => {
+        // this is going to be a time before the start of the current context's
+        // sampleTime, as the note happened in the past
+        msg.sampleTime = ((msg.timeStamp - context.domTimestamp) / 1000.0 *
+          context.sampleRate) + context.sampleTime;
+        return msg;
+      })];
       this._messages = [];
       return result;
     }

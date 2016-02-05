@@ -1,5 +1,5 @@
-define(['app/vobjects/vobject'],
-(vobject) => {
+define(['app/vobjects/vobject', 'app/util'],
+(vobject, util) => {
   class Log extends vobject.VObject {
     numInputs() { return 1; }
     numOutputs() { return 0; }
@@ -8,7 +8,12 @@ define(['app/vobjects/vobject'],
       if (!inputs[0]) {
         return [];
       }
-      console.log(JSON.stringify(inputs));
+      if (util.isAudioArray(inputs[0])) {
+        // too spammy
+        console.log('(audio)');
+      } else {
+        console.log(JSON.stringify(inputs[0]));
+      }
       return [];
     }
   }

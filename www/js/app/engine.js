@@ -4,7 +4,7 @@ define(['lodash'], (_) => {
   class Engine {
     constructor() {
       this.graph = new VObjectGraph();
-      this.bufferSize = 8192;
+      this.bufferSize = 512;
       this.numChannels = 2;
     }
 
@@ -36,6 +36,7 @@ define(['lodash'], (_) => {
     }
 
     onaudioprocess(e) {
+      const domTimestamp = window.performance ? window.performance.now() : null;
       const extOutputBuffers = [];
       for (let i = 0; i < e.outputBuffer.numberOfChannels; i++) {
         extOutputBuffers.push(e.outputBuffer.getChannelData(i));
@@ -58,7 +59,8 @@ define(['lodash'], (_) => {
         extInputBuffers,
         extOutputBuffers,
         this.graph,
-        this.bufferPool);
+        this.bufferPool,
+        domTimestamp);
 
       this.prevOutputValues = this.audioProcess.run(this.prevOutputValues);
     }
@@ -80,7 +82,8 @@ define(['lodash'], (_) => {
         extInputBuffers,
         extOutputBuffers,
         graph,
-        bufferPool) {
+        bufferPool,
+        domTimestamp) {
       this.sampleTime = sampleTime;
       this.sampleRate = sampleRate;
       this.extInputBuffers = extInputBuffers;
@@ -88,6 +91,7 @@ define(['lodash'], (_) => {
       this.bufferPool = bufferPool;
       this.graph = graph;
       this.inputBuffers = {};
+      this.domTimestamp = domTimestamp;
     }
 
     run(prevOutputValues) {
@@ -101,7 +105,8 @@ define(['lodash'], (_) => {
         extInputBuffers: this.extInputBuffers,
         extOutputBuffers: this.extOutputBuffers,
         getBuffer: this.bufferPool ? _.bind(this.bufferPool.getBuffer,
-          this.bufferPool) : null
+          this.bufferPool) : null,
+        domTimestamp: this.domTimestamp
       };
 
       // recording of all outputs generated during this traversal; returned to

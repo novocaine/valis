@@ -37,7 +37,7 @@ define(['app/engine', 'lodash', 'app/vobject_factory'],
     updateVobjectArgs(vobject, args) {
       // delete and re-instantiate the object with new arguments
       const newVobject = vobjectFactory.create(
-        vobject.constructor.vobjectClass, vobject.id, ...args);
+        vobject.constructor.vobjectClass, null, ...args);
       this.graph.replaceVobject(vobject, newVobject);
       this.vobjectPositions[newVobject.id] = this.vobjectPositions[vobject.id];
       delete this.vobjectPositions[vobject.id];

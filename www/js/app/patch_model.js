@@ -1,14 +1,31 @@
 define(['app/engine', 'lodash', 'app/vobject_factory'],
 (engine, _, vobjectFactory) => {
   class PatchModel {
-    /**
-     * Constructs a blank patch
-     */
-    constructor() {
+    constructor(patchJSON) {
       // TODO: move this into a parent 'doc' when we support sub-patches
       this.engine = new engine.Engine();
       this.graph = this.engine.graph;
-      this.vobjectPositions = {};
+
+      if (!patchJSON) {
+        // new blank document
+        this.vobjectPositions = {};
+      } else {
+        const json = _.isString(patchJSON) ? JSON.parse(patchJSON) : patchJSON;
+        this.vobjectPositions = json.vobjectPositions;
+
+        _.each(json.vobjects, (vobjectDesc, id) => {
+          const vobject = vobjectFactory.create(vobjectDesc.vobjectClass,
+            id, ...vobjectDesc.args);
+          this.graph.addVobject(vobject);
+        });
+
+        _.each(json.dedges, (dedgeDesc) => {
+          this.graph.addDedge(this.graph.vobjects[dedgeDesc.from],
+            dedgeDesc.fromOutput,
+            this.graph.vobjects[dedgeDesc.to],
+            dedgeDesc.toInput);
+        });
+      }
     }
 
     addVobject(vobject, x, y) {
@@ -20,7 +37,7 @@ define(['app/engine', 'lodash', 'app/vobject_factory'],
     updateVobjectArgs(vobject, args) {
       // delete and re-instantiate the object with new arguments
       const newVobject = vobjectFactory.create(
-        vobject.constructor.vobjectClass, ...args);
+        vobject.constructor.vobjectClass, vobject.id, ...args);
       this.graph.replaceVobject(vobject, newVobject);
       this.vobjectPositions[newVobject.id] = this.vobjectPositions[vobject.id];
       delete this.vobjectPositions[vobject.id];
@@ -47,24 +64,24 @@ define(['app/engine', 'lodash', 'app/vobject_factory'],
     }
 
     toJSON() {
-      const dedges = [];
-      this.engine.graph.iterDeges((dedge) => {
-        dedges.push({
+      const dedges = _.map(this.engine.graph.getAllDedges(), (dedge) => {
+        return {
           from: dedge.from.id,
           fromOutput: dedge.fromOutput,
           to: dedge.to.id,
           toInput: dedge.toInput
-        });
+        };
       });
 
       const vobjects = _.reduce(this.engine.graph.vobjects, (memo, vobject) => {
-        memo[vobject.id] = _.merge({ // eslint-disable-line no-param-reassign
-          vobjectClass: vobject.vobjectClass
-        }, vobject.toJSON());
+        memo[vobject.id] = {
+          vobjectClass: vobject.constructor.vobjectClass,
+          args: vobject.args
+        };
         return memo;
       }, {});
 
-      return { dedges, vobjects };
+      return { dedges, vobjects, vobjectPositions: this.vobjectPositions };
     }
   }
 

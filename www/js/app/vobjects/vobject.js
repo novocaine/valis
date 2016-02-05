@@ -1,7 +1,6 @@
 define(['lodash'], (_) => {
   class VObject {
     constructor(...args) {
-      this.id = _.uniqueId();
       this.args = args;
     }
 
@@ -9,11 +8,9 @@ define(['lodash'], (_) => {
     numOutputs() { throw new Error('abstract'); }
 
     toJSON() {
-      return {};
-    }
-
-    getState() {
-      return {};
+      return {
+        args: this.args
+      };
     }
 
     static processArgString(argString) {

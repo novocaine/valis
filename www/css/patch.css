@@ -41,4 +41,9 @@
 
 button.enable-audio {
     float: right;
+    margin-right: 0.5em;
+}
+
+button.to-json {
+    float: right;
 }

@@ -4,8 +4,9 @@ define(['react',
         'jquery',
         'app/gui/jsx/patch',
         'app/vobject_factory',
-        'lodash'],
-(React, ReactDOM, jqueryui, $, patchComponent, vobjectFactory, _) => {
+        'lodash',
+        'filesaver'],
+(React, ReactDOM, jqueryui, $, patchComponent, vobjectFactory, _, filesaver) => {
   /**
    * The top-level 'document' component.
    */
@@ -19,6 +20,7 @@ define(['react',
         <div className="doc">
           <div className="toolbar">
             <Palette doc={this} />
+            <ToJSON doc={this} />
             <EnableAudio doc={this} />
           </div>
           <patchComponent.PatchComponent ref="rootPatch" doc={this}
@@ -55,6 +57,27 @@ define(['react',
           revert: 'invalid'
         });
       });
+    }
+  });
+
+  const ToJSON = React.createClass({
+    propTypes: {
+      doc: React.PropTypes.object.isRequired
+    },
+
+    render() {
+      return (
+        <button className="to-json" onClick={this.onClick}>{
+          this.props.doc.props.patchModel.audioEnabled() ?
+            'toJSON' : 'Enable Audio'
+        }
+        </button>);
+    },
+
+    onClick() {
+      const json = JSON.stringify(this.props.doc.props.patchModel.toJSON());
+      const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
+      filesaver(blob, 'valis.json');
     }
   });
 

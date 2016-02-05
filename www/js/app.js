@@ -10,6 +10,11 @@ requirejs.config({
         app: '../app',
         lib: '../lib'
     },
+    shim: {
+        filesaver: {
+            exports: 'filesaver'
+        }
+    }
 });
 
 requirejs(['lib/jquery', 'app/gui/main'],

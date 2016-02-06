@@ -1,4 +1,4 @@
-define(['lodash', 'app/vobjects/vobject'], (_, vobject) => {
+define(['lodash', 'app/vobjects/vobject', 'app/msg'], (_, vobject, Message) => {
   class Midi extends vobject.VObject {
     numInputs() { return 0; }
     numOutputs() { return 1; }
@@ -29,7 +29,7 @@ define(['lodash', 'app/vobjects/vobject'], (_, vobject) => {
       // the message format is pretty damn unwieldy, so convert it into
       // something legible..
       const data = event.data;
-      const msg = {
+      const message = {
         cmd: data[0] >> 4,
         channel: data[0] & 0xf,
         type: data[0] & 0xf0,
@@ -37,16 +37,16 @@ define(['lodash', 'app/vobjects/vobject'], (_, vobject) => {
         velocity: data[2],
         timeStamp: event.receivedTime
       };
-      this._messages.push(msg);
+      this._messages.push(message);
     }
 
     generate(context, inputs, outputs) {
       const result = [this._messages.map((msg) => {
         // this is going to be a time before the start of the current context's
         // sampleTime, as the note happened in the past
-        msg.sampleTime = Math.round(((msg.timeStamp - context.domTimestamp) / 1000.0 *
+        const sampleTime = Math.round(((msg.timeStamp - context.domTimestamp) / 1000.0 *
           context.sampleRate) + context.sampleTime);
-        return msg;
+        return new Message(sampleTime, msg);
       })];
       this._messages = [];
       return result;

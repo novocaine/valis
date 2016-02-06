@@ -1,5 +1,5 @@
-define(['app/vobjects/vobject', 'app/util'],
-(vobject, util) => {
+define(['app/vobjects/vobject', 'app/util', 'lodash'],
+(vobject, util, _) => {
   class Cycle extends vobject.VObject {
     numInputs() { return 1; }
     numOutputs() { return 1; }
@@ -8,6 +8,7 @@ define(['app/vobjects/vobject', 'app/util'],
       super(frequency);
       this.frequency = frequency;
       this._prevx = 0.0;
+      this._prevFrequency = 0.0;
     }
 
     generateXmodResult(context, frequency) {
@@ -19,25 +20,55 @@ define(['app/vobjects/vobject', 'app/util'],
         result[i] = Math.cos(x);
       }
       this._prevx = x;
-      return [result];
     }
 
-    generateFixedFreqResult(context, frequency) {
+    generateFixedFreqResult(result, context, frequency, from, until) {
+      from = Math.min(Math.max(from, 0), result.length);
+      until = Math.min(Math.max(until, 0), result.length);
+
       const radiansPerSample = (frequency * 2 * Math.PI) / context.sampleRate;
-      const result = context.getBuffer();
-      for (let i = 0; i < result.length; i++) {
-        result[i] = Math.cos((context.sampleTime + i) * radiansPerSample);
+      if (until === undefined) {
+        until = result.length;
       }
-      return [result];
+      for (let i = from; i < until; i++) {
+        this._prevx += radiansPerSample;
+        result[i] = Math.cos(this._prevx);
+      }
+    }
+
+    generateMsgResult(result, context, messages) {
+      this.generateFixedFreqResult(result, context, this._prevFrequency, 0,
+        messages.length === 0 ? result.length :
+          messages[0].sampleTime - context.sampleTime);
+
+      for (let i = 0; i < messages.length; i++) {
+        const msg = messages[i];
+        this.generateFixedFreqResult(result, context, msg.data,
+          msg.sampleTime - context.sampleTime,
+          i === messages.length - 1 ? result.length :
+            messages[i + 1].sampleTime - context.sampleTime);
+      }
+
+      if (messages.length) {
+        this._prevFrequency = messages[messages.length - 1].data;
+      }
     }
 
     generate(context, inputs, outputs) {
       const frequency = 0 in inputs ? inputs[0] : this.frequency;
+      const result = context.getBuffer();
 
       if (util.isAudioArray(frequency)) {
-        return this.generateXmodResult(context, frequency);
+        this.generateXmodResult(context, frequency);
+      } else if (_.isNumber(frequency)) {
+        this.generateFixedFreqResult(result, context, frequency, 0, result.length);
+      } else if (_.isArray(frequency)) {
+        this.generateMsgResult(result, context, frequency);
+      } else {
+        throw Error(`unexpected input type`);
       }
-      return this.generateFixedFreqResult(context, frequency);
+
+      return [result];
     }
   }
 

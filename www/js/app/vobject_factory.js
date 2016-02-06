@@ -1,11 +1,13 @@
 define(['app/vobjects/js', 'app/vobjects/dac', 'app/vobjects/cycle',
         'app/vobjects/binary_ops', 'app/vobjects/delay', 'app/vobjects/midi',
-        'app/vobjects/mtof', 'app/vobjects/log', 'app/vobjects/adenv',
+        'app/vobjects/mtof', 'app/vobjects/log', 'app/vobjects/adsr',
+        'app/vobjects/pulse', 'app/vobjects/arp',
         'lodash'],
-(JS, DAC, Cycle, binaryOps, Delay, Midi, MtoF, Log, ADEnvelope, _) => {
+(JS, DAC, Cycle, binaryOps, Delay, Midi, MtoF, Log, ADSREnvelope, Pulse,
+Arpeggiator, _) => {
   // register them here
   const classList = [JS, DAC, Cycle, binaryOps.Mul, binaryOps.Add, Delay, Midi,
-    MtoF, Log, ADEnvelope];
+    MtoF, Log, ADSREnvelope, Pulse, Arpeggiator];
 
   class VObjectFactory {
     constructor(nextId) {

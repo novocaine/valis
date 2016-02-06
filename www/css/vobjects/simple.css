@@ -52,6 +52,7 @@
     border: none;
     display: inline-block;
     vertical-align: middle;
+    width: 7em;
 }
 
 .vobject-simple .vobject-class

@@ -60,7 +60,8 @@ define(['lodash'], (_) => {
         extOutputBuffers,
         this.graph,
         this.bufferPool,
-        domTimestamp);
+        domTimestamp,
+        this.bufferSize);
 
       this.prevOutputValues = this.audioProcess.run(this.prevOutputValues);
     }
@@ -83,7 +84,8 @@ define(['lodash'], (_) => {
         extOutputBuffers,
         graph,
         bufferPool,
-        domTimestamp) {
+        domTimestamp,
+        bufferSize) {
       this.sampleTime = Math.round(sampleTime);
       this.sampleRate = sampleRate;
       this.extInputBuffers = extInputBuffers;
@@ -92,6 +94,7 @@ define(['lodash'], (_) => {
       this.graph = graph;
       this.inputBuffers = {};
       this.domTimestamp = domTimestamp;
+      this.bufferSize = bufferSize;
     }
 
     run(prevOutputValues) {
@@ -106,7 +109,8 @@ define(['lodash'], (_) => {
         extOutputBuffers: this.extOutputBuffers,
         getBuffer: this.bufferPool ? _.bind(this.bufferPool.getBuffer,
           this.bufferPool) : null,
-        domTimestamp: this.domTimestamp
+        domTimestamp: this.domTimestamp,
+        bufferSize: this.bufferSize
       };
 
       // recording of all outputs generated during this traversal; returned to

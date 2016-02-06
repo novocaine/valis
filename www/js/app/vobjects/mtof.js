@@ -16,9 +16,9 @@ define(['lodash', 'app/vobjects/vobject', 'app/msg'], (_, vobject, Message) => {
 
       if (inputs[0]) {
         inputs[0].forEach((msg) => {
-          // msg should be the msg dict constructed by 'midi'.
-          if (msg.type === 0x90) { // note on
-            this._lastFreq = this.frequencyFromNoteNumber(msg.note);
+          // msg is expected to be the format created by 'midi'.
+          if (msg.data.type === 0x90) { // note on
+            this._lastFreq = this.frequencyFromNoteNumber(msg.data.note);
             // The notes occured at an earlier sample time, so we need to move
             // them forward into this context's frame - add the current buffer
             // len to them. TODO - maybe it's necessary to delay even more?
@@ -33,7 +33,7 @@ define(['lodash', 'app/vobjects/vobject', 'app/msg'], (_, vobject, Message) => {
             lastNoteTime = sampleOffset;
             gateMsgs.push(new Message(msg.sampleTime + result.length, 1));
             this._notesOn++;
-          } else if (msg.type === 0x80) {
+          } else if (msg.data.type === 0x80) {
             // don't release the gate while we've still got notes on
             if (--this._notesOn === 0) {
               gateMsgs.push(new Message(msg.sampleTime + result.length, 0));

@@ -10,8 +10,8 @@ define(['app/vobjects/vobject', 'app/util'],
     numOutputs() { return 1; }
 
     generate(context, inputs, outputs) {
-      if (inputs.length === 0) {
-        return [];
+      if (inputs[0] === undefined) {
+        return [0];
       }
 
       const firstIsAa = util.isAudioArray(inputs[0]);

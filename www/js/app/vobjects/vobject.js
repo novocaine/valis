@@ -8,6 +8,9 @@ define(['lodash'], (_) => {
     numOutputs() { throw new Error('abstract'); }
 
     static processArgString(argString) {
+      if (argString.trim().length === 0) {
+        return [];
+      }
       return _.map(argString.split(' '), (elem) => elem.trim());
     }
   }

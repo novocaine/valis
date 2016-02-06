@@ -84,7 +84,7 @@ define(['lodash'], (_) => {
         graph,
         bufferPool,
         domTimestamp) {
-      this.sampleTime = sampleTime;
+      this.sampleTime = Math.round(sampleTime);
       this.sampleRate = sampleRate;
       this.extInputBuffers = extInputBuffers;
       this.extOutputBuffers = extOutputBuffers;

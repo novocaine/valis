@@ -1,21 +1,22 @@
-define(['lodash', 'app/vobjects/vobject'], (_, vobject) => {
+define(['lodash', 'app/vobjects/vobject', 'app/msg'], (_, vobject, Message) => {
   class MtoF extends vobject.VObject {
     numInputs() { return 1; }
-    numOutputs() { return 1; }
+    numOutputs() { return 2; }
 
     constructor() {
       super();
       this._lastFreq = 0.0;
+      this._notesOn = 0;
     }
 
     generate(context, inputs, outputs) {
       const result = context.getBuffer();
+      const gateMsgs = [];
       let lastNoteTime = 0;
 
       if (inputs[0]) {
         inputs[0].forEach((msg) => {
           // msg should be the msg dict constructed by 'midi'.
-          // TODO: not sure about polyphony?
           if (msg.type === 0x90) { // note on
             this._lastFreq = this.frequencyFromNoteNumber(msg.note);
             // The notes occured at an earlier sample time, so we need to move
@@ -28,15 +29,21 @@ define(['lodash', 'app/vobjects/vobject'], (_, vobject) => {
             if (sampleOffset < 0) {
               sampleOffset = 0;
             }
-            console.log(`fill ${this._lastFreq} ${lastNoteTime} ${sampleOffset}`);
             result.fill(this._lastFreq, lastNoteTime, sampleOffset);
             lastNoteTime = sampleOffset;
+            gateMsgs.push(new Message(msg.sampleTime + result.length, 1));
+            this._notesOn++;
+          } else if (msg.type === 0x80) {
+            // don't release the gate while we've still got notes on
+            if (--this._notesOn === 0) {
+              gateMsgs.push(new Message(msg.sampleTime + result.length, 0));
+            }
           }
         });
         result.fill(this._lastFreq, lastNoteTime);
       }
 
-      return [result];
+      return [result, gateMsgs];
     }
 
     frequencyFromNoteNumber(note) {

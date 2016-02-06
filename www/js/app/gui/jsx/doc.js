@@ -19,7 +19,9 @@ define(['react',
       return (
         <div className="doc">
           <div className="toolbar">
-            <Palette doc={this} />
+            <Palette vobjectClasses={
+              this.props.patchModel.vobjectFactory.constructor.vobjectClasses
+            } />
             <ToJSON doc={this} />
             <EnableAudio doc={this} />
           </div>
@@ -35,9 +37,13 @@ define(['react',
    * The tool palette, containing vobjects to drag into the patch.
    */
   const Palette = React.createClass({
+    propTypes: {
+      vobjectClasses: React.PropTypes.object.isRequired
+    },
+
     render() {
       return (<ul className="palette"> {
-        _.map(vobjectFactory.vobjectClasses, (vclass, cname) => {
+        _.map(this.props.vobjectClasses, (vclass, cname) => {
           return (
               <li className="palette-item" key={cname} data-classname={cname}>
                 {cname}

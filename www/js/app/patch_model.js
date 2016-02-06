@@ -1,5 +1,5 @@
 define(['app/engine', 'lodash', 'app/vobject_factory'],
-(engine, _, vobjectFactory) => {
+(engine, _, VObjectFactory) => {
   class PatchModel {
     constructor(patchJSON) {
       // TODO: move this into a parent 'doc' when we support sub-patches
@@ -9,12 +9,14 @@ define(['app/engine', 'lodash', 'app/vobject_factory'],
       if (!patchJSON) {
         // new blank document
         this.vobjectPositions = {};
+        this.vobjectFactory = new VObjectFactory();
       } else {
         const json = _.isString(patchJSON) ? JSON.parse(patchJSON) : patchJSON;
         this.vobjectPositions = json.vobjectPositions;
+        this.vobjectFactory = new VObjectFactory(json.nextVobjectId);
 
         _.each(json.vobjects, (vobjectDesc, id) => {
-          const vobject = vobjectFactory.create(vobjectDesc.vobjectClass,
+          const vobject = this.vobjectFactory.create(vobjectDesc.vobjectClass,
             id, ...vobjectDesc.args);
           this.graph.addVobject(vobject);
         });
@@ -36,7 +38,7 @@ define(['app/engine', 'lodash', 'app/vobject_factory'],
 
     updateVobjectArgs(vobject, args) {
       // delete and re-instantiate the object with new arguments
-      const newVobject = vobjectFactory.create(
+      const newVobject = this.vobjectFactory.create(
         vobject.constructor.vobjectClass, null, ...args);
       this.graph.replaceVobject(vobject, newVobject);
       this.vobjectPositions[newVobject.id] = this.vobjectPositions[vobject.id];
@@ -81,7 +83,8 @@ define(['app/engine', 'lodash', 'app/vobject_factory'],
         return memo;
       }, {});
 
-      return { dedges, vobjects, vobjectPositions: this.vobjectPositions };
+      return { dedges, vobjects, vobjectPositions: this.vobjectPositions,
+        nextVobjectId: this.vobjectFactory.nextId };
     }
   }
 

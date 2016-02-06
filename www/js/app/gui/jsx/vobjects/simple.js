@@ -75,7 +75,7 @@ define(['react', 'react-dom', 'jquery', 'lodash',
             dangerouslySetInnerHTML={ { __html: this.props.vobject.constructor.vobjectSymbol } }
           />
           <Textarea className="args" rows={1} onBlur={this.onChangeArgs}
-            defaultValue={this.props.vobject.args.join()}
+            defaultValue={this.props.vobject.args.join(" ")}
           />
           <div className="outputs">
             {

@@ -44,8 +44,8 @@ define(['lodash', 'app/vobjects/vobject'], (_, vobject) => {
       const result = [this._messages.map((msg) => {
         // this is going to be a time before the start of the current context's
         // sampleTime, as the note happened in the past
-        msg.sampleTime = ((msg.timeStamp - context.domTimestamp) / 1000.0 *
-          context.sampleRate) + context.sampleTime;
+        msg.sampleTime = Math.round(((msg.timeStamp - context.domTimestamp) / 1000.0 *
+          context.sampleRate) + context.sampleTime);
         return msg;
       })];
       this._messages = [];

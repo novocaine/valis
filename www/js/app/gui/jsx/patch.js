@@ -41,7 +41,8 @@ define(['react',
       $(ReactDOM.findDOMNode(this)).droppable({
         accept: '.palette-item',
         drop: (event, ui) => {
-          const vobject = vobjectFactory.create(ui.helper.attr('data-classname'));
+          const vobject = this.props.patchModel.vobjectFactory.create(
+            ui.helper.attr('data-classname'));
           const domNode = $(ReactDOM.findDOMNode(this));
           const offset = domNode.offset();
           this.props.patchModel.addVobject(vobject,

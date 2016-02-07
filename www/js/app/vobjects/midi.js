@@ -3,8 +3,8 @@ define(['lodash', 'app/vobjects/vobject', 'app/msg'], (_, vobject, Message) => {
     numInputs() { return 0; }
     numOutputs() { return 1; }
 
-    constructor() {
-      super();
+    constructor(options) {
+      super(options);
       this._messages = [];
 
       if (navigator.requestMIDIAccess) {

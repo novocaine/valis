@@ -1,19 +1,45 @@
 define(['app/vobjects/vobject', 'app/engine', 'app/vobjects/time',
         'app/vobjects/recorder', 'app/vobjects/cycle', 'app/vobjects/dac',
+        'app/vobject_factory',
         'lodash'],
-(vobject, engine, Time, Recorder, Cycle, DAC, _) => {
+(vobject, engine, Time, Recorder, Cycle, DAC, VObjectFactory, _) => {
+  const printObject = (obj) => {
+    return JSON.stringify(obj, (k, v) => {
+      if (v === undefined) {
+        return '(undefined)';
+      }
+
+      return v;
+    });
+  };
+  beforeEach(() => {
+    jasmine.addMatchers({
+      toDeepEqual: (util, customEqualityTesters) => {
+        return {
+          compare: (actual, expected) => {
+            return {
+              pass: _.isEqual(actual, expected),
+              message: `Expected ${printObject(actual)} to equal ` +
+                `${printObject(expected)}`
+            };
+          }
+        };
+      }
+    });
+  });
+  const vobjectFactory = new VObjectFactory(0);
   describe('VObjectGraph', () => {
     describe('addVobject', () => {
       it('should add an empty entry in .dedges', () => {
         const graph = new engine.VObjectGraph();
-        const obj1 = new vobject.VObject();
+        const obj1 = vobjectFactory.create('log');
         graph.addVobject(obj1);
         expect(graph.dedges[obj1.id]).toEqual({});
       });
 
       it('should initially register the object as a leaf', () => {
         const graph = new engine.VObjectGraph();
-        const obj = new vobject.VObject();
+        const obj = vobjectFactory.create('log');
         graph.addVobject(obj);
         expect(graph.leaves[obj.id]).toBe(obj);
       });
@@ -22,7 +48,7 @@ define(['app/vobjects/vobject', 'app/engine', 'app/vobjects/time',
     describe('removeVobject', () => {
       it('should remove the corresponding vobject from leaves', () => {
         const graph = new engine.VObjectGraph();
-        const obj = new vobject.VObject();
+        const obj = vobjectFactory.create('log');
         graph.addVobject(obj);
         expect(graph.leaves[obj.id]).toBe(obj);
         graph.removeVobject(obj);
@@ -31,8 +57,8 @@ define(['app/vobjects/vobject', 'app/engine', 'app/vobjects/time',
 
       it('should remove any dedges coming from the vobject', () => {
         const graph = new engine.VObjectGraph();
-        const obj1 = new vobject.VObject();
-        const obj2 = new vobject.VObject();
+        const obj1 = vobjectFactory.create('log');
+        const obj2 = vobjectFactory.create('log');
         graph.addVobject(obj1);
         graph.addVobject(obj2);
         graph.addDedge(obj1, 3, obj2, 1);
@@ -42,8 +68,8 @@ define(['app/vobjects/vobject', 'app/engine', 'app/vobjects/time',
 
       it('should remove any dedges going to the vobject', () => {
         const graph = new engine.VObjectGraph();
-        const obj1 = new vobject.VObject();
-        const obj2 = new vobject.VObject();
+        const obj1 = vobjectFactory.create('log');
+        const obj2 = vobjectFactory.create('log');
         graph.addVobject(obj1);
         graph.addVobject(obj2);
         graph.addDedge(obj1, 3, obj2, 1);
@@ -56,8 +82,8 @@ define(['app/vobjects/vobject', 'app/engine', 'app/vobjects/time',
     describe('addDedge', () => {
       it('should register a new dedge', () => {
         const graph = new engine.VObjectGraph();
-        const obj1 = new vobject.VObject();
-        const obj2 = new vobject.VObject();
+        const obj1 = vobjectFactory.create('log');
+        const obj2 = vobjectFactory.create('log');
         graph.addVobject(obj1);
         graph.addVobject(obj2);
         graph.addDedge(obj1, 3, obj2, 1);
@@ -72,8 +98,8 @@ define(['app/vobjects/vobject', 'app/engine', 'app/vobjects/time',
 
       it('should remove the from vobject from leaves', () => {
         const graph = new engine.VObjectGraph();
-        const obj1 = new vobject.VObject();
-        const obj2 = new vobject.VObject();
+        const obj1 = vobjectFactory.create('log');
+        const obj2 = vobjectFactory.create('log');
         graph.addVobject(obj1);
         graph.addVobject(obj2);
         expect(graph.leaves[obj1.id]).toBe(obj1);
@@ -86,8 +112,8 @@ define(['app/vobjects/vobject', 'app/engine', 'app/vobjects/time',
   describe('removeDedge', () => {
     it('should add the from vobject back to leaves if its the last output', () => {
       const graph = new engine.VObjectGraph();
-      const obj1 = new vobject.VObject();
-      const obj2 = new vobject.VObject();
+      const obj1 = vobjectFactory.create('log');
+      const obj2 = vobjectFactory.create('log');
       graph.addVobject(obj1);
       graph.addVobject(obj2);
       graph.addDedge(obj1, 3, obj2, 1);
@@ -99,8 +125,8 @@ define(['app/vobjects/vobject', 'app/engine', 'app/vobjects/time',
 
     it('should remove the dedge from this.dedges', () => {
       const graph = new engine.VObjectGraph();
-      const obj1 = new vobject.VObject();
-      const obj2 = new vobject.VObject();
+      const obj1 = vobjectFactory.create('log');
+      const obj2 = vobjectFactory.create('log');
       graph.addVobject(obj1);
       graph.addVobject(obj2);
       graph.addDedge(obj1, 3, obj2, 1);
@@ -121,77 +147,77 @@ define(['app/vobjects/vobject', 'app/engine', 'app/vobjects/time',
 
     it('should run a simple graph of two nodes, one source one sink', () => {
       const ap = createAudioProcess();
-      const sampletime = new Time();
+      const sampletime = new Time({ id: 0 });
       // use a recorder to check the data comes through
-      const recorder = new Recorder();
+      const recorder = new Recorder({ id: 1 });
       ap.graph.addVobject(sampletime);
       ap.graph.addVobject(recorder);
       ap.graph.addDedge(sampletime, 0, recorder, 0);
       ap.run();
-      expect(_.isEqual(recorder.record, { 0: { 0: '0' } })).toEqual(true);
+      expect(recorder.record).toDeepEqual({ 0: { 0: '0' } });
     });
 
     it('should run a simple graph of two nodes, both leaves', () => {
       const ap = createAudioProcess();
-      const recorder1 = new Recorder();
-      const recorder2 = new Recorder();
+      const recorder1 = new Recorder({ id: 0 });
+      const recorder2 = new Recorder({ id: 1 });
       ap.graph.addVobject(recorder1);
       ap.graph.addVobject(recorder2);
       ap.run();
-      expect(_.isEqual(recorder1.record, { 0: {} })).toEqual(true);
-      expect(_.isEqual(recorder2.record, { 0: {} })).toEqual(true);
+      expect(recorder1.record).toDeepEqual({ 0: {} });
+      expect(recorder2.record).toDeepEqual({ 0: {} });
     });
 
     it('should run a graph of two nodes input to one', () => {
       const ap = createAudioProcess();
-      const recorder = new Recorder();
-      const sampletime1 = new Time();
-      const sampletime2 = new Time();
+      const recorder = new Recorder({ id: 0 });
+      const sampletime1 = new Time({ id: 1 });
+      const sampletime2 = new Time({ id: 2 });
       ap.graph.addVobject(recorder);
       ap.graph.addVobject(sampletime1);
       ap.graph.addVobject(sampletime2);
       ap.graph.addDedge(sampletime1, 0, recorder, 0);
       ap.graph.addDedge(sampletime2, 0, recorder, 1);
       ap.run();
-      expect(_.isEqual(recorder.record, { 0: { 0: '0', 1: '0' } })).toEqual(true);
+      expect(recorder.record).toDeepEqual({ 0: { 0: '0', 1: '0' } });
     });
 
     it('should run a graph of two nodes input to one', () => {
       const ap = createAudioProcess();
-      const recorder = new Recorder();
-      const sampletime1 = new Time();
-      const sampletime2 = new Time();
+      const recorder = new Recorder({ id: 0 });
+      const sampletime1 = new Time({ id: 1 });
+      const sampletime2 = new Time({ id: 2 });
       ap.graph.addVobject(recorder);
       ap.graph.addVobject(sampletime1);
       ap.graph.addVobject(sampletime2);
       ap.graph.addDedge(sampletime1, 0, recorder, 0);
       ap.graph.addDedge(sampletime2, 0, recorder, 1);
       ap.run();
-      expect(_.isEqual(recorder.record, { 0: { 0: '0', 1: '0' } })).toEqual(true);
+      expect(recorder.record).toDeepEqual({ 0: { 0: '0', 1: '0' } });
     });
 
     it('should run a graph where an output is connected to two inputs', () => {
       const ap = createAudioProcess();
-      const recorder = new Recorder();
-      const sampletime = new Time();
+      const recorder = new Recorder({ id: 0 });
+      const sampletime = new Time({ id: 1 });
       ap.graph.addVobject(recorder);
       ap.graph.addVobject(sampletime);
       ap.graph.addDedge(sampletime, 0, recorder, 0);
       ap.graph.addDedge(sampletime, 0, recorder, 1);
       ap.run();
-      expect(_.isEqual(recorder.record, { 0: { 0: '0', 1: '0' } })).toEqual(true);
+      expect(recorder.record).toDeepEqual({ 0: { 0: '0', 1: '0' } });
     });
 
     it('should run a graph where an output is connected to two inputs', () => {
       const ap = createAudioProcess();
-      const recorder = new Recorder();
-      const sampletime = new Time();
+      const recorder = new Recorder({ id: 0 });
+      const sampletime = new Time({ id: 1 });
       ap.graph.addVobject(recorder);
       ap.graph.addVobject(sampletime);
       ap.graph.addDedge(sampletime, 0, recorder, 0);
       ap.graph.addDedge(sampletime, 0, recorder, 1);
       ap.run();
-      expect(_.isEqual(recorder.record, { 0: { 0: '0', 1: '0' } })).toEqual(true);
+      expect(recorder.record).toDeepEqual({ 0: { 0: '0', 1: '0' } });
     });
   });
 

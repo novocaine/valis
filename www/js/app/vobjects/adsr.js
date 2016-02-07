@@ -3,8 +3,8 @@ define(['lodash', 'app/vobjects/vobject'], (_, vobject) => {
     numInputs() { return 1; }
     numOutputs() { return 1; }
 
-    constructor(attack = 1, decay = 1, sustain = 0, release = 1) {
-      super(attack, decay, sustain, release);
+    constructor(options, attack = 1, decay = 1, sustain = 0, release = 1) {
+      super(options, attack, decay, sustain, release);
       this.attack = parseFloat(attack);
       this.decay = parseFloat(decay);
       this.sustain = parseFloat(sustain);

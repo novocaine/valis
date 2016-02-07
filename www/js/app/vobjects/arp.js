@@ -4,8 +4,8 @@ define(['lodash', 'app/vobjects/vobject', 'app/msg', 'app/util'],
     numInputs() { return 1; }
     numOutputs() { return 1; }
 
-    constructor(...frequencies) {
-      super(...frequencies);
+    constructor(options, ...frequencies) {
+      super(options, ...frequencies);
       this.frequencies = _.map(frequencies, (s) => parseFloat(s));
     }
 

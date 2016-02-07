@@ -3,8 +3,8 @@ define(['lodash', 'app/vobjects/vobject', 'app/msg'], (_, vobject, Message) => {
     numInputs() { return 1; }
     numOutputs() { return 2; }
 
-    constructor() {
-      super();
+    constructor(options) {
+      super(options);
       this._lastFreq = 0.0;
       this._notesOn = 0;
     }

@@ -9,7 +9,7 @@ define(['app/engine', 'lodash', 'app/vobject_factory'],
       if (!patchJSON) {
         // new blank document
         this.vobjectPositions = {};
-        this.vobjectFactory = new VObjectFactory();
+        this.vobjectFactory = new VObjectFactory(0);
       } else {
         const json = _.isString(patchJSON) ? JSON.parse(patchJSON) : patchJSON;
         this.vobjectPositions = json.vobjectPositions;

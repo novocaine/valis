@@ -1,8 +1,8 @@
 define(['app/vobjects/vobject', 'app/util'],
 (vobject, util) => {
   class BinaryOp extends vobject.VObject {
-    constructor(operand) {
-      super(operand);
+    constructor(options, operand) {
+      super(options, operand);
       this.operand = operand;
     }
 

@@ -4,8 +4,8 @@ define(['lodash', 'app/vobjects/vobject', 'app/msg', 'app/util'],
     numInputs() { return 0; }
     numOutputs() { return 1; }
 
-    constructor(bpm, pulseLength) {
-      super(bpm, pulseLength);
+    constructor(options, bpm, pulseLength) {
+      super(options, bpm, pulseLength);
       this.bpm = parseFloat(bpm); // in beats per minute
       this.pulseLength = parseFloat(pulseLength); // in beats
       this._nextMsgSampleTime = null;

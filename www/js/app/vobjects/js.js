@@ -4,8 +4,8 @@ define(['app/vobjects/vobject'],
     numInputs() { return 1; }
     numOutputs() { return 1; }
 
-    constructor(script) {
-      super(script);
+    constructor(options, script) {
+      super(options, script);
       this.script = script;
     }
 

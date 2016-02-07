@@ -1,7 +1,15 @@
 define(['lodash'], (_) => {
   class VObject {
-    constructor(...args) {
+    constructor(options, ...args) {
+      // options is an object passed through from the factory code that is
+      // undertood by this superclass (currently only containing an id); args
+      // is the list of args from the end-user
       this.args = args;
+      this.id = options.id;
+
+      if (this.id === undefined) {
+        throw Error('Vobject ctor not passed id');
+      }
     }
 
     numInputs() { throw new Error('abstract'); }

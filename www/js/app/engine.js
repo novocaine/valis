@@ -249,7 +249,14 @@ define(['lodash'], (_) => {
           (iterDedge) => {
             return iterDedge.to !== vobject;
           });
-        this.dedges[dedge.from.id][dedge.fromOutput] = newEdges;
+        if (newEdges.length === 0) {
+          delete this.dedges[dedge.from.id][dedge.fromOutput];
+          if (_.keys(this.dedges[dedge.from.id]).length === 0) {
+            delete this.dedges[dedge.from.id];
+          }
+        } else {
+          this.dedges[dedge.from.id][dedge.fromOutput] = newEdges;
+        }
       });
       delete this.dedgesTo[vobject.id];
       delete this.leaves[vobject.id];

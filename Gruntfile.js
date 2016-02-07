@@ -1,17 +1,9 @@
 /*global module:false*/
-/*global __dirname:false*/
 var path = require("path");
 
 module.exports = function(grunt) {
   /* require('load-grunt-tasks')(grunt); */
   require('time-grunt')(grunt);
-
-  var requireBaseUrl = "build/es5/js/app";
-  var requirePaths = {
-      lib: '../lib',
-      app: '../app',
-      requireLib: '../lib/require'
-  };
 
   // Project configuration.
   grunt.initConfig({
@@ -66,10 +58,14 @@ module.exports = function(grunt) {
     requirejs: {
       compile: {
         options: {
-          baseUrl: requireBaseUrl,
+          baseUrl: "build/es5/js/lib",
           mainConfigFile: "build/es5/js/app.js",
           name: 'app',
-          paths: requirePaths,
+          paths: {
+              lib: '../lib',
+              app: '../app',
+              requireLib: '../lib/require'
+          },
           out: "build/dist/js/app.js",
           include: 'requireLib'
         }
@@ -104,5 +100,5 @@ module.exports = function(grunt) {
   // compilation and babel (es6 -> es5) transpilation.
   grunt.registerTask('es5', ['babel', 'copy:es5']);
   // build minified and concatenated into build/dist (for distribution) using r.js
-  grunt.registerTask('dist', ['eslint:lint', 'es5', 'copy:dist', 'requirejs']);
+  grunt.registerTask('dist', ['es5', 'copy:dist', 'requirejs']);
 };

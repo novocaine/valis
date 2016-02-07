@@ -18,8 +18,9 @@ Arpeggiator, _) => {
       if (!(vobjectClassname in this.constructor.vobjectClasses)) {
         throw new Error(`vobject with class ${vobjectClassname} not found`);
       }
-      const vobject = new this.constructor.vobjectClasses[vobjectClassname](...args);
-      vobject.id = (id === undefined || id === null) ? this.nextId++ : id;
+      id = (id === undefined || id === null) ? this.nextId++ : id;
+      const vobject = new this.constructor.vobjectClasses[vobjectClassname]({ id },
+        ...args);
       return vobject;
     }
   }

@@ -1,8 +1,8 @@
 define(['app/vobjects/vobject', 'app/util'],
 (vobject, util) => {
   class Delay extends vobject.VObject {
-    constructor(delay = 0.5) {
-      super(delay);
+    constructor(options, delay = 0.5) {
+      super(options, delay);
       this.delay = delay;
       // circular buffer
       this._buf = null;

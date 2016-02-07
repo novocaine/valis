@@ -4,8 +4,8 @@ define(['app/vobjects/vobject', 'app/util', 'lodash'],
     numInputs() { return 1; }
     numOutputs() { return 1; }
 
-    constructor(frequency = 440) {
-      super(frequency);
+    constructor(options, frequency = 440) {
+      super(options, frequency);
       this.frequency = frequency;
       this._prevx = 0.0;
       this._prevFrequency = 0.0;

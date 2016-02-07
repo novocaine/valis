@@ -4,17 +4,20 @@ define(['app/patch_model', 'app/vobjects/cycle', 'lodash'],
     it('should toJSON with a vobject in it', () => {
       const patchModel = new PatchModel();
       const graph = patchModel.graph;
-      const cycle = new Cycle();
+      const cycle = new Cycle({ id: 0 });
       graph.addVobject(cycle);
       const json = patchModel.toJSON();
-      expect(_.equals(json, {
+      expect(json).toDeepEqual({
+        dedges: [],
         vobjects: {
           [cycle.id]: {
-            vobjectClass: 'cycle~',
-            frequency: cycle.frequency
+            vobjectClass: 'oscillator',
+            args: [cycle.frequency]
           }
-        }
-      })).toBe(true);
+        },
+        vobjectPositions: {},
+        nextVobjectId: 0
+      });
     });
   });
 });

@@ -15,8 +15,6 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      // needs to be loaded before anything else
-      'build/es5/js/lib/traceur-runtime.js',
       'test-main.js',
       // will be filtered down by test-main.js
       {pattern: 'build/es5/**/*.js', included: false},

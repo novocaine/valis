@@ -4,8 +4,8 @@ define(['app/vobjects/vobject', 'lodash'],
     numInputs() { return 1; }
     numOutputs() { return 0; }
 
-    constructor(args) {
-      super(args);
+    constructor(options, args) {
+      super(options, args);
       this.record = {};
     }
 

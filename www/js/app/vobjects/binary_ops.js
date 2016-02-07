@@ -3,7 +3,7 @@ define(['app/vobjects/vobject', 'app/util'],
   class BinaryOp extends vobject.VObject {
     constructor(options, operand) {
       super(options, operand);
-      this.operand = operand;
+      this.operand = operand || 0;
     }
 
     numInputs() { return 2; }
@@ -33,7 +33,7 @@ define(['app/vobjects/vobject', 'app/util'],
         scalar = inputs[0];
       } else if (firstIsAa) {
         aa = inputs[0];
-        scalar = inputs[1] || 0;
+        scalar = inputs[1];
         if (scalar === undefined) {
           scalar = this.operand;
           if (scalar === undefined) {

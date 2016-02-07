@@ -12,7 +12,7 @@ Only tested on Chrome 47 on OS X, YMMV with other browsers and platforms ..
 
 [Generative Sine Waves](http://novocaine.github.io/valis/?patch=https://raw.githubusercontent.com/novocaine/valis/master/demos/generative.json) (plays sound on entering the page)
 
-[MIDI Input](http://novocaine.github.io/valis/?patch=https://raw.githubusercontent.com/novocaine/valis/master/demos/midi.json) (connect a keyboard before loading the page, then play some notes)
+[Monosynth with MIDI Input](http://novocaine.github.io/valis/?patch=https://raw.githubusercontent.com/novocaine/valis/master/demos/midi.json) (connect a keyboard before loading the page, then play some notes)
 
 [Empty workspace](http://novocaine.github.io/valis)
 

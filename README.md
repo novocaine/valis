@@ -77,6 +77,7 @@ Currently hardly any optimization has been done, the code focuses on simplicity
 and ease of implementation of modules. But here's the hitlist that should at
 least be done for the framework and core modules:
 
+* Try moving audio rendering to a web worker to avoid dropouts during GUI operation.
 * More copying of buffer data using [copyWithin](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/copyWithin) rather than just naively doing the copies in JS. One would expect the browser can directly use SIMD etc to blaze it. This only really helps straight copy situations like in the DAC, delay, not sure it's all that big a deal?
 * [simd.js](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SIMD) once [Chrome supports it](https://bugs.chromium.org/p/v8/issues/detail?id=4124).
 * Culling the audio processing graph for things that aren't connected. This is

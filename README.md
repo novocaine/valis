@@ -4,7 +4,15 @@
 
 MAX/MSP/PD-alike modular audio programming environment for the browser. 
 
-In progress - move along, this isn't useful to a general audience yet.
+In progress - this isn't useful to a general audience yet.
+
+## Demos
+
+[Generative Sine Waves](http://novocaine.github.io/valis/?patch=https://raw.githubusercontent.com/novocaine/valis/master/demos/generative.json)
+
+[MIDI Input](http://novocaine.github.io/valis/?patch=https://raw.githubusercontent.com/novocaine/valis/master/demos/midi.json)
+
+[Empty workspace](http://novocaine.github.io/valis)
 
 ## Current Features
 

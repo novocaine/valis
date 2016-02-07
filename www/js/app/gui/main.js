@@ -16,6 +16,7 @@ define([
           start(model);
         })
         .fail(() => {
+          // TODO: show error message
           const model = new PatchModel();
           start(model);
         });
@@ -25,9 +26,14 @@ define([
   };
 
   const start = (model) => {
-    // enable audio by default
-    model.enableAudio();
-    doc.render(model);
+    const docComponent = doc.render(model);
+    // enable audio by default, but delay it being enabled to try to allow
+    // everything to settle - otherwise you get nasty pops while the browsers
+    // still buzzing about rendering
+    window.setTimeout(() => {
+      model.enableAudio();
+      docComponent.setState({});
+    }, 500);
   };
 
   return { init };

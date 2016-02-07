@@ -110,8 +110,9 @@ define(['react',
 
   const render = (model) => {
     $('#splash-loading').hide();
-    ReactDOM.render(<Doc patchModel={model} />,
+    const doc = ReactDOM.render(<Doc patchModel={model} />,
       document.getElementById('doc'));
+    return doc;
   };
 
   return {

@@ -2,9 +2,9 @@
 
 MAX/MSP/PD-alike modular audio programming environment for the browser. 
 
-In progress - move along.
+In progress - move along, this isn't useful to a general audience yet.
 
-## Features
+## Current Features
 
 * Drag/drop modular programming similar to PD / MAX, with similar minimalist
   component philosophy
@@ -20,18 +20,37 @@ In progress - move along.
 * react.js frontend.
 * Karma tests (you do need a real browser to perform web audio based tests).
 
-## TODO
+## TODOs
+
+### Bugs
+
+* The new connection drawing stuff can't handle it when the window is scrolled
+* Resizing of text boxes doesn't stick, and entering arguments is crappy in general
+* Never tested on anything but Chrome on OS X
+
+### Features 
+
+* Ability to delete nodes
+* Ability to change buffer size
+* Subpatches
+* Hot reloading while editing module code
+* Some way of sharing extension vobjects between authors
+* Bit less primitive save/loading - persist patches to disk via BrowserFS or similar, and be able to load from URL
+* Some sort of compatibility with Pure Data patches
+* Investigate transpiling Pure Data modules using emscripten and duct tape?
+* Keyboard shortcuts
+
+### Codebase
 
 * Migrate to webpack/browserify, currently runtime dependencies are being
   managed manually by copying into www/js/lib
-* Hot reloading while editing module code
-* Live editing built-ins
-* Persist patches to disk via BrowserFS or similar
-* Subpatches
-* Some sort of compatibility with Pure Data patches
-* Investigate transpiling Pure Data modules using emscripten and duct tape
+* Move CSS to LESS
 
-## TODO - Optimizations
+### Documentation 
+
+* Everything, there isn't any
+
+### Optimizations
 
 Currently hardly any optimization has been done, the code focuses on simplicity
 and ease of implementation of modules. But here's the hitlist that should at
@@ -42,7 +61,9 @@ least be done for the framework and core modules:
 * Culling the audio processing graph for things that aren't connected. This is
   tricky because nodes could have other side-effects - maybe some sort of
   opt-in flag?
-* Memoization of output for multiply connected outputs (no brainer).
 * Fixed buffer allocation - currently we just new() when we need them. Not sure
   if this is necessarily all that helpful. Maybe the browser's heap works well if the
   allocations are following a repeated pattern as we do when processing audio.
+* Some on-the-fly calcs could be stored for later rather than being repeated at
+  each generate().
+*  

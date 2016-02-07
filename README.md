@@ -49,6 +49,8 @@ Still some dated stuff around as the project was setup in the JS stone-age (2014
   How is anyone actually using this for transpiled projets? gulp? scons?? GNU make???
 * Migrate to webpack/browserify, currently runtime dependencies are being
   managed manually by copying into www/js/lib
+* There's no optimized build at moment as the r.js deployment broke and it needs to be
+  migrated to something else anyway.
 * Move CSS to LESS
 * Move away from AMD / require.js to ES2015 modules.
 * DRY up creation of new vobjects a little bit.

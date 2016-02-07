@@ -278,7 +278,6 @@ define(['lodash'], (_) => {
     }
 
     addDedge(from, fromOutput, to, toInput) {
-      console.log(`addDedge ${from.id} ${fromOutput} ${to.id} ${toInput}`);
       if (!(from.id in this.dedges)) {
         this.dedges[from.id] = {};
       }
@@ -298,7 +297,6 @@ define(['lodash'], (_) => {
     }
 
     removeDedge(from, fromOutput, to, toInput) {
-      console.log(`removeDedge ${from.id} ${fromOutput} ${to.id} ${toInput}`);
       const edges = this.dedges[from.id][fromOutput];
       for (let i = 0; i < edges.length; i++) {
         if (edges[i].from === from && edges[i].fromOutput === fromOutput

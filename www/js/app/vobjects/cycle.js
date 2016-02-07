@@ -11,8 +11,7 @@ define(['app/vobjects/vobject', 'app/util', 'lodash'],
       this._prevFrequency = 0.0;
     }
 
-    generateXmodResult(context, frequency) {
-      const result = context.getBuffer();
+    generateXmodResult(result, context, frequency) {
       let x = this._prevx;
       for (let i = 0; i < result.length; i++) {
         const radiansPerSample = (frequency[i] * 2 * Math.PI) / context.sampleRate;
@@ -59,7 +58,7 @@ define(['app/vobjects/vobject', 'app/util', 'lodash'],
       const result = context.getBuffer();
 
       if (util.isAudioArray(frequency)) {
-        this.generateXmodResult(context, frequency);
+        this.generateXmodResult(result, context, frequency);
       } else if (_.isNumber(frequency)) {
         this.generateFixedFreqResult(result, context, frequency, 0, result.length);
       } else if (_.isArray(frequency)) {

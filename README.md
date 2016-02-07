@@ -66,6 +66,8 @@ Still some dated stuff around as the project was setup in the JS stone-age (2014
 * Move CSS to LESS
 * Move away from AMD / require.js to ES2015 modules.
 * DRY up creation of new vobjects a little bit.
+* Do less rendering in react when anything changes - maybe adopt something like
+  flux?
 
 ### Documentation 
 

@@ -5,10 +5,10 @@ define(['lodash', 'app/vobjects/vobject'], (_, vobject) => {
 
     constructor(options, attack = 1, decay = 1, sustain = 0, release = 1) {
       super(options, attack, decay, sustain, release);
-      this.attack = parseFloat(attack);
-      this.decay = parseFloat(decay);
+      this.attack = Math.max(0.01, parseFloat(attack));
+      this.decay = Math.max(0.01, parseFloat(decay));
       this.sustain = parseFloat(sustain);
-      this.release = parseFloat(release);
+      this.release = Math.max(0.01, parseFloat(release));
       this._triggerOn = null;
       this._triggerOff = null;
       this._ptr = 0;

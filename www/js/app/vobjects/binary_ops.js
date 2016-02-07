@@ -33,7 +33,7 @@ define(['app/vobjects/vobject', 'app/util'],
         scalar = inputs[0];
       } else if (firstIsAa) {
         aa = inputs[0];
-        scalar = inputs[1];
+        scalar = inputs[1] || 0;
         if (scalar === undefined) {
           scalar = this.operand;
           if (scalar === undefined) {

@@ -1,6 +1,6 @@
 # VALIS
 
-[![Build Status](https://travis-ci.org/novocaine/valis.svg?branch=master)]
+[![Build Status](https://travis-ci.org/novocaine/valis.svg?branch=master)](https://travis-ci.org/novocaine/valis)
 
 MAX/MSP/PD-alike modular audio programming environment for the browser. 
 

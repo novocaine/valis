@@ -63,7 +63,12 @@ define(['lodash'], (_) => {
         domTimestamp,
         this.bufferSize);
 
-      this.prevOutputValues = this.audioProcess.run(this.prevOutputValues);
+      try {
+        this.prevOutputValues = this.audioProcess.run(this.prevOutputValues);
+      } catch (ex) {
+        console.log(ex);
+        this.stop();
+      }
     }
 
     writeSilence(extOutputBuffers) {

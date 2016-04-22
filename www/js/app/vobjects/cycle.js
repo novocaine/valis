@@ -6,7 +6,7 @@ define(['app/vobjects/vobject', 'app/util', 'lodash'],
 
     constructor(options, frequency = 440) {
       super(options, frequency);
-      this.frequency = frequency;
+      this.frequency = parseFloat(frequency);
       this._prevx = 0.0;
       this._prevFrequency = 0.0;
     }

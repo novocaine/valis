@@ -60,6 +60,8 @@ define(['react', 'react-dom', 'jquery', 'lodash',
         left: pos.x
       };
 
+      const PanelComponent = this.props.vobject.constructor.panelComponent;
+
       return (
         <div className="vobject-simple" data-vobject-id={this.props.vobject.id}
           style={style}
@@ -75,8 +77,14 @@ define(['react', 'react-dom', 'jquery', 'lodash',
             dangerouslySetInnerHTML={ { __html: this.props.vobject.constructor.vobjectSymbol } }
           />
           <Textarea className="args" rows={1} onBlur={this.onChangeArgs}
-            defaultValue={this.props.vobject.args.join(" ")}
+            defaultValue={this.props.vobject.args.join(' ')}
           />
+          {
+            PanelComponent ?
+              <div className="vobject-panel">
+                <PanelComponent vobject={this.props.vobject} />
+              </div> : ''
+          }
           <div className="outputs">
             {
               _.range(this.props.vobject.numOutputs()).map((i) =>

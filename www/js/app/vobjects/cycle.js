@@ -1,12 +1,14 @@
-define(['app/vobjects/vobject', 'app/util', 'lodash'],
-(vobject, util, _) => {
+define(['react', 'app/vobjects/vobject', 'app/util', 'lodash',
+        'app/gui/jsx/vobjects/knob'],
+(React, vobject, util, _, Knob) => {
   class Cycle extends vobject.VObject {
     numInputs() { return 1; }
     numOutputs() { return 1; }
 
-    constructor(options, frequency = 440) {
+    constructor(options, frequency = 440, pulsewidth=1.0) {
       super(options, frequency);
       this.frequency = parseFloat(frequency);
+      this.pulsewidth = 1.0;
       this._prevx = 0.0;
       this._prevFrequency = 0.0;
     }
@@ -73,6 +75,23 @@ define(['app/vobjects/vobject', 'app/util', 'lodash'],
 
   Cycle.vobjectClass = 'oscillator';
   Cycle.vobjectSymbol = 'osc';
+
+  Cycle.panelComponent = React.createClass({
+    propTypes: {
+      vobject: React.PropTypes.object.isRequired
+    },
+
+    render() {
+      return (
+        <div>
+          <Knob vobject={this.props.vobject} propName="frequency"
+            min={0} max={5000} />
+          <Knob vobject={this.props.vobject} propName="pulsewidth"
+            min={0} max={5000} />
+        </div>
+      );
+    }
+  });
 
   return Cycle;
 });

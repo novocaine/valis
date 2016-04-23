@@ -25,6 +25,7 @@
     "karma-firefox-launcher": "~0.1.4",
     "karma-jasmine": "~0.3.5",
     "karma-requirejs": "~0.2.2",
+    "less": "^2.6.1",
     "lodash": "~4.2.1",
     "react-tools": "~0.11.1",
     "requirejs": "~2.1.17",

@@ -5,6 +5,7 @@ define(['react', 'react-dom', 'jquery', 'jquery.knob'],
       vobject: React.PropTypes.object.isRequired,
       min: React.PropTypes.number.isRequired,
       max: React.PropTypes.number.isRequired,
+      step: React.PropTypes.number,
       propName: React.PropTypes.string.isRequired,
       width: React.PropTypes.number,
       height: React.PropTypes.number
@@ -13,7 +14,8 @@ define(['react', 'react-dom', 'jquery', 'jquery.knob'],
     getDefaultProps() {
       return {
         width: 50,
-        height: 50
+        height: 50,
+        step: 1
       };
     },
 
@@ -23,11 +25,12 @@ define(['react', 'react-dom', 'jquery', 'jquery.knob'],
 
     render() {
       return (
-        <div className="knob">
+        <div className="knob disable-vobject-drag">
           <label>
             <input type="text" value={this.getValue()}
               data-min={this.props.min}
               data-max={this.props.max}
+              data-step={this.props.step}
               data-width={this.props.width}
               data-height={this.props.height} />
 

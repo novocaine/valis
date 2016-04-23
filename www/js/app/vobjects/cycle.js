@@ -87,7 +87,7 @@ define(['react', 'app/vobjects/vobject', 'app/util', 'lodash',
           <Knob vobject={this.props.vobject} propName="frequency"
             min={0} max={5000} />
           <Knob vobject={this.props.vobject} propName="pulsewidth"
-            min={0} max={5000} />
+            min={0} max={1} step={0.1} />
         </div>
       );
     }

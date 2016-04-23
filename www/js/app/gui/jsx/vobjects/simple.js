@@ -48,7 +48,8 @@ define(['react', 'react-dom', 'jquery', 'lodash',
           this.props.patchModel.setVobjectPosition(this.props.vobject.id,
               ui.position.left,
               ui.position.top);
-        }
+        },
+        cancel: '.disable-vobject-drag'
       }).addClass('draggable');
     },
 
